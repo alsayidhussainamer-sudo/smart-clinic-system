@@ -686,6 +686,25 @@ async function editDoctor(id) {
     document.getElementById("doctorFullName").value = doctor.FullName;
     document.getElementById("doctorPhone").value = doctor.Phone;
     document.getElementById("doctorEmail").value = doctor.Email;
+
+    const specialtySelect = document.getElementById("doctorSpecialtyId");
+    specialtySelect.innerHTML = '<option value="">Select Specialty</option>';
+
+    const specialtiesResponse = await secureFetch("http://localhost:4000/specialties");
+    if (!specialtiesResponse) return;
+
+    const specialties = await specialtiesResponse.json();
+
+    specialties.forEach(specialty => {
+        const displayName = specialty.SpecialtyNameAr 
+            ? `${specialty.SpecialtyName} / ${specialty.SpecialtyNameAr}`
+            : specialty.SpecialtyName;
+
+        specialtySelect.innerHTML += `
+            <option value="${specialty.SpecialtyId}">${displayName}</option>
+        `;
+    });
+
     document.getElementById("doctorSpecialtyId").value = doctor.SpecialtyId;
 
     const modal = new bootstrap.Modal(document.getElementById("doctorModal"));
