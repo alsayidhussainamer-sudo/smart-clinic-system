@@ -1,18 +1,19 @@
-const { Pool } = require('pg');
+const mysql = require('mysql2');
 
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-        rejectUnauthorized: false
-    }
+const db = mysql.createConnection({
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || 'smart_clinic_system',
+    port: process.env.DB_PORT || 3306
 });
 
-pool.connect((err) => {
+db.connect((err) => {
     if (err) {
-        console.error('Error connecting to PostgreSQL Database:', err);
+        console.error('Error connecting to MySQL:', err);
         return;
     }
-    console.log('Connected to PostgreSQL Database ✅');
+    console.log('Connected to MySQL Database ✅');
 });
 
-module.exports = pool;
+module.exports = db;
