@@ -97,7 +97,12 @@ const translations = {
         // AI
         aiSuggest: "AI Suggest",
         generating: "Generating...",
-        enterSymptoms: "Please enter symptoms first"
+        enterSymptoms: "Please enter symptoms first",
+
+        // Themes
+        darkMode: "Dark Mode",
+        highContrast: "High Contrast",
+        defaultTheme: "Default Theme"
     },
 
     ar: {
@@ -194,7 +199,12 @@ const translations = {
         // AI
         aiSuggest: "اقتراح ذكي",
         generating: "جاري التوليد...",
-        enterSymptoms: "الرجاء إدخال الأعراض أولاً"
+        enterSymptoms: "الرجاء إدخال الأعراض أولاً",
+
+        // Themes
+        darkMode: "الوضع الداكن",
+        highContrast: "تباين عالي",
+        defaultTheme: "الوضع الافتراضي"
     }
 };
 

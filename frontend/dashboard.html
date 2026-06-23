@@ -354,6 +354,7 @@
         }
     </style>
 <base target="_blank">
+<base target="_blank">
 </head>
 
 <body>
@@ -393,7 +394,7 @@
             <i class="fa-solid fa-globe"></i> <span data-i18n="language">العربية</span>
         </button>
         <button class="sidebar-toggle-btn" onclick="toggleTheme()" id="themeBtn">
-            <i class="fa-solid fa-moon"></i> <span id="themeLabel">🌑 Dark Mode</span>
+            <i class="fa-solid fa-moon" id="themeIcon"></i> <span id="themeLabel" data-i18n="darkMode">Dark Mode</span>
         </button>
     </div>
 
@@ -990,13 +991,14 @@ const ThemeManager = {
 
     updateLabel() {
         const label = document.getElementById('themeLabel');
+        const icon = document.getElementById('themeIcon');
         const btn = document.getElementById('themeBtn');
-        if (!label || !btn) return;
+        if (!label || !icon || !btn) return;
 
-        const labels = {
-            'default': '🌑 Dark Mode',
-            'dark': '👁️ High Contrast',
-            'high-contrast': '☀️ Default'
+        const keys = {
+            'default': 'darkMode',
+            'dark': 'highContrast',
+            'high-contrast': 'defaultTheme'
         };
 
         const icons = {
@@ -1005,8 +1007,23 @@ const ThemeManager = {
             'high-contrast': 'fa-sun'
         };
 
-        label.textContent = labels[this.currentTheme];
-        btn.querySelector('i').className = `fa-solid ${icons[this.currentTheme]}`;
+        // Use translation if available, fallback to English
+        const key = keys[this.currentTheme];
+        const translated = (typeof I18n !== 'undefined' && I18n.get) ? I18n.get(key) : null;
+
+        if (translated && translated !== key) {
+            label.textContent = translated;
+        } else {
+            // Fallback labels
+            const fallbackLabels = {
+                'default': '🌑 Dark Mode',
+                'dark': '👁️ High Contrast',
+                'high-contrast': '☀️ Default'
+            };
+            label.textContent = fallbackLabels[this.currentTheme];
+        }
+
+        icon.className = `fa-solid ${icons[this.currentTheme]}`;
     }
 };
 
