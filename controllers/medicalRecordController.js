@@ -49,6 +49,13 @@ exports.addMedicalRecord = (req, res) => {
         visitDate
     } = req.body;
 
+    // Validate required fields
+    if (!patientId || !doctorId || !symptoms || !diagnosis || !visitDate) {
+        return res.status(400).json({
+            message: "Missing required fields: patientId, doctorId, symptoms, diagnosis, and visitDate are required"
+        });
+    }
+
     const sql = `
         INSERT INTO MedicalRecords
         (
@@ -67,20 +74,29 @@ exports.addMedicalRecord = (req, res) => {
         doctorId,
         symptoms,
         diagnosis,
-        treatment,
+        treatment || null,
         visitDate
-    ], (err) => {
+    ], (err, result) => {
 
         if (err) {
-            console.log(err);
+            console.error("=== MEDICAL RECORD ADD ERROR ===");
+            console.error("Error code:", err.code);
+            console.error("Error message:", err.message);
+            console.error("SQL State:", err.sqlState);
+            console.error("Request body:", req.body);
+            console.error("=================================");
 
+            // Return detailed error to frontend for debugging
             return res.status(500).json({
-                message: "Error adding medical record"
+                message: "Error adding medical record",
+                error: err.message,
+                code: err.code
             });
         }
 
         res.json({
-            message: "Medical record added successfully"
+            message: "Medical record added successfully",
+            recordId: result.insertId
         });
     });
 };
