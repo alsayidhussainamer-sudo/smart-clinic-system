@@ -1,4 +1,22 @@
 // =========================
+// LANGUAGE SUPPORT (Added for i18n)
+// =========================
+
+function t(key) {
+    return I18n.get(key);
+}
+
+// Override alert messages with translations
+const originalAlert = window.alert;
+window.alert = function(message) {
+    // Try to translate if it's a known key
+    if (translations[I18n.currentLang] && translations[I18n.currentLang][message]) {
+        message = translations[I18n.currentLang][message];
+    }
+    originalAlert(message);
+};
+
+// =========================
 // GLOBAL VARIABLES
 // =========================
 
@@ -30,12 +48,12 @@ async function secureFetch(url, options = {}) {
     });
 
     if (response.status === 403) {
-        alert("Access denied. You don't have permission.");
+        alert(t("accessDenied"));
         return null;
     }
 
     if (response.status === 401) {
-        alert("Session expired. Please login again.");
+        alert(t("sessionExpired"));
         logout();
         return null;
     }
@@ -191,12 +209,13 @@ async function loadDashboard() {
     recentTable.innerHTML = "";
     appointments.slice(0, 5).forEach(appointment => {
         const statusClass = appointment.Status.toLowerCase();
+        const statusText = t(statusClass) || appointment.Status;
         recentTable.innerHTML += `
             <tr>
                 <td>${appointment.PatientName}</td>
                 <td>${appointment.DoctorName}</td>
                 <td>${new Date(appointment.AppointmentDate).toLocaleString()}</td>
-                <td><span class="status-badge status-${statusClass}">${appointment.Status}</span></td>
+                <td><span class="status-badge status-${statusClass}">${statusText}</span></td>
             </tr>
         `;
     });
@@ -212,8 +231,6 @@ async function loadDashboard() {
 function refreshStats() {
     loadDashboard();
 }
-
-
 
 // =========================
 // SECTION NAVIGATION
@@ -295,7 +312,7 @@ function renderPatientsTable(patients) {
     tableBody.innerHTML = "";
 
     if (patients.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">No patients found</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">${t("noDataFound")}</td></tr>`;
         return;
     }
 
@@ -309,10 +326,10 @@ function renderPatientsTable(patients) {
                 <td>${patient.Email}</td>
                 <td>
                     <button class="btn btn-warning btn-sm" onclick="editPatient(${patient.PatientId})">
-                        <i class="fa-solid fa-pen"></i> Edit
+                        <i class="fa-solid fa-pen"></i> ${t("edit")}
                     </button>
                     <button class="btn btn-danger btn-sm" onclick="deletePatient(${patient.PatientId})">
-                        <i class="fa-solid fa-trash"></i> Delete
+                        <i class="fa-solid fa-trash"></i> ${t("delete")}
                     </button>
                 </td>
             </tr>
@@ -325,12 +342,11 @@ function renderDoctorsTable(doctors) {
     tableBody.innerHTML = "";
 
     if (doctors.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">No doctors found</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">${t("noDataFound")}</td></tr>`;
         return;
     }
 
     doctors.forEach(doctor => {
-        // Show both English and Arabic specialty names
         let specialtyDisplay = "N/A";
         if (doctor.SpecialtyName && doctor.SpecialtyNameAr) {
             specialtyDisplay = `${doctor.SpecialtyName} / ${doctor.SpecialtyNameAr}`;
@@ -349,10 +365,10 @@ function renderDoctorsTable(doctors) {
                 <td>${doctor.Email}</td>
                 <td>
                     <button class="btn btn-warning btn-sm" onclick="editDoctor(${doctor.DoctorId})">
-                        <i class="fa-solid fa-pen"></i> Edit
+                        <i class="fa-solid fa-pen"></i> ${t("edit")}
                     </button>
                     <button class="btn btn-danger btn-sm" onclick="deleteDoctor(${doctor.DoctorId})">
-                        <i class="fa-solid fa-trash"></i> Delete
+                        <i class="fa-solid fa-trash"></i> ${t("delete")}
                     </button>
                 </td>
             </tr>
@@ -365,12 +381,13 @@ function renderAppointmentsTable(appointments) {
     tableBody.innerHTML = "";
 
     if (appointments.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-muted">No appointments found</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-muted">${t("noDataFound")}</td></tr>`;
         return;
     }
 
     appointments.forEach(appointment => {
         const statusClass = appointment.Status.toLowerCase();
+        const statusText = t(statusClass) || appointment.Status;
         tableBody.innerHTML += `
             <tr>
                 <td>${appointment.AppointmentId}</td>
@@ -380,13 +397,13 @@ function renderAppointmentsTable(appointments) {
                 <td>${new Date('1970-01-01T' + appointment.AppointmentTime).toLocaleTimeString([], {
                     hour: '2-digit', minute: '2-digit', hour12: true
                 })}</td>
-                <td><span class="status-badge status-${statusClass}">${appointment.Status}</span></td>
+                <td><span class="status-badge status-${statusClass}">${statusText}</span></td>
                 <td>
                     <button class="btn btn-warning btn-sm" onclick="editAppointment(${appointment.AppointmentId})">
-                        <i class="fa-solid fa-pen"></i> Edit
+                        <i class="fa-solid fa-pen"></i> ${t("edit")}
                     </button>
                     <button class="btn btn-danger btn-sm" onclick="deleteAppointment(${appointment.AppointmentId})">
-                        <i class="fa-solid fa-trash"></i> Delete
+                        <i class="fa-solid fa-trash"></i> ${t("delete")}
                     </button>
                 </td>
             </tr>
@@ -399,7 +416,7 @@ function renderMedicalRecordsTable(records) {
     tableBody.innerHTML = "";
 
     if (records.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">No records found</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">${t("noDataFound")}</td></tr>`;
         return;
     }
 
@@ -415,10 +432,10 @@ function renderMedicalRecordsTable(records) {
                 <td>${record.VisitDate.split("T")[0]}</td>
                 <td>
                     <button class="btn btn-warning btn-sm me-2" onclick="editMedicalRecord(${record.RecordId})">
-                        <i class="fa-solid fa-pen"></i> Edit
+                        <i class="fa-solid fa-pen"></i> ${t("edit")}
                     </button>
                     <button class="btn btn-danger btn-sm" onclick="deleteMedicalRecord(${record.RecordId})">
-                        <i class="fa-solid fa-trash"></i> Delete
+                        <i class="fa-solid fa-trash"></i> ${t("delete")}
                     </button>
                 </td>
             </tr>
@@ -431,7 +448,7 @@ function renderUsersTable(users) {
     tableBody.innerHTML = "";
 
     if (users.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-muted">No users found</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-muted">${t("noDataFound")}</td></tr>`;
         return;
     }
 
@@ -443,10 +460,10 @@ function renderUsersTable(users) {
                 <td><span class="status-badge status-${user.Role.toLowerCase()}">${user.Role}</span></td>
                 <td>
                     <button class="btn btn-warning btn-sm" onclick="editUser(${user.UserId}, '${user.Username}', '${user.Role}')">
-                        <i class="fa-solid fa-pen"></i> Edit
+                        <i class="fa-solid fa-pen"></i> ${t("edit")}
                     </button>
                     <button class="btn btn-danger btn-sm" onclick="deleteUser(${user.UserId})">
-                        <i class="fa-solid fa-trash"></i> Delete
+                        <i class="fa-solid fa-trash"></i> ${t("delete")}
                     </button>
                 </td>
             </tr>
@@ -489,7 +506,6 @@ async function addPatient() {
         address: document.getElementById("address").value
     };
 
-    // Validate using Validation module
     const validation = Validation.validatePatientForm(patient);
     if (!Validation.showErrors(validation.errors)) {
         return;
@@ -525,7 +541,7 @@ async function addPatient() {
 }
 
 async function deletePatient(id) {
-    if (!confirm("Are you sure you want to delete this patient?")) return;
+    if (!confirm(t("confirmDelete"))) return;
 
     const response = await secureFetch(`http://localhost:4000/patients/${id}`, {
         method: "DELETE"
@@ -577,7 +593,7 @@ async function loadDoctors() {
 }
 
 async function deleteDoctor(id) {
-    if (!confirm("Are you sure you want to delete this doctor?")) return;
+    if (!confirm(t("confirmDelete"))) return;
 
     const response = await secureFetch(`http://localhost:4000/doctors/${id}`, {
         method: "DELETE"
@@ -605,7 +621,7 @@ async function openDoctorModal() {
     document.getElementById("doctorSpecialtyId").value = "";
 
     const specialtySelect = document.getElementById("doctorSpecialtyId");
-    specialtySelect.innerHTML = '<option value="">Select Specialty</option>';
+    specialtySelect.innerHTML = `<option value="">${t("selectSpecialty")}</option>`;
 
     const response = await secureFetch("http://localhost:4000/specialties");
     if (!response) return;
@@ -613,7 +629,6 @@ async function openDoctorModal() {
     const specialties = await response.json();
 
     specialties.forEach(specialty => {
-        // Show both English and Arabic names in dropdown
         const displayName = specialty.SpecialtyNameAr 
             ? `${specialty.SpecialtyName} / ${specialty.SpecialtyNameAr}`
             : specialty.SpecialtyName;
@@ -635,7 +650,6 @@ async function addDoctor() {
         specialtyId: document.getElementById("doctorSpecialtyId").value
     };
 
-    // Validate using Validation module
     const validation = Validation.validateDoctorForm(doctor);
     if (!Validation.showErrors(validation.errors)) {
         return;
@@ -688,7 +702,7 @@ async function editDoctor(id) {
     document.getElementById("doctorEmail").value = doctor.Email;
 
     const specialtySelect = document.getElementById("doctorSpecialtyId");
-    specialtySelect.innerHTML = '<option value="">Select Specialty</option>';
+    specialtySelect.innerHTML = `<option value="">${t("selectSpecialty")}</option>`;
 
     const specialtiesResponse = await secureFetch("http://localhost:4000/specialties");
     if (!specialtiesResponse) return;
@@ -771,7 +785,6 @@ async function addAppointment() {
         status: document.getElementById("appointmentStatus").value
     };
 
-    // Validate using Validation module
     const validation = Validation.validateAppointmentForm(appointment);
     if (!Validation.showErrors(validation.errors)) {
         return;
@@ -807,7 +820,7 @@ async function addAppointment() {
 }
 
 async function deleteAppointment(id) {
-    if (!confirm("Are you sure you want to delete this appointment?")) return;
+    if (!confirm(t("confirmDelete"))) return;
 
     const response = await secureFetch(`http://localhost:4000/appointments/${id}`, {
         method: "DELETE"
@@ -877,8 +890,8 @@ async function openMedicalRecordModal() {
     const patientSelect = document.getElementById("recordPatientId");
     const doctorSelect = document.getElementById("recordDoctorId");
 
-    patientSelect.innerHTML = `<option value="">Select Patient</option>`;
-    doctorSelect.innerHTML = `<option value="">Select Doctor</option>`;
+    patientSelect.innerHTML = `<option value="">${t("patient")}</option>`;
+    doctorSelect.innerHTML = `<option value="">${t("doctor")}</option>`;
 
     patients.forEach(patient => {
         patientSelect.innerHTML += `
@@ -913,7 +926,6 @@ async function addMedicalRecord() {
         visitDate: document.getElementById("recordVisitDate").value
     };
 
-    // Validate using Validation module
     const validation = Validation.validateMedicalRecordForm(record);
     if (!Validation.showErrors(validation.errors)) {
         return;
@@ -949,7 +961,7 @@ async function addMedicalRecord() {
 }
 
 async function deleteMedicalRecord(id) {
-    if (!confirm("Delete this medical record?")) return;
+    if (!confirm(t("confirmDelete"))) return;
 
     const response = await secureFetch(`http://localhost:4000/medical-records/${id}`, {
         method: "DELETE"
@@ -997,13 +1009,13 @@ async function aiSuggestMedicalRecord() {
     const aiButton = document.getElementById("aiSuggestButton");
 
     if (!symptoms || symptoms.trim() === "") {
-        alert("Please enter symptoms first");
+        alert(t("enterSymptoms"));
         return;
     }
 
     try {
         aiButton.disabled = true;
-        aiButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating...';
+        aiButton.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> ${t("generating")}`;
 
         const response = await secureFetch("http://localhost:4000/api/ai/suggest", {
             method: "POST",
@@ -1022,7 +1034,6 @@ async function aiSuggestMedicalRecord() {
 
         const cleanText = data.suggestion.replace(/\*\*/g, "");
 
-        // Detect if response is in Arabic
         const arabicRegex = /[؀-ۿ]/;
         const isArabic = arabicRegex.test(cleanText);
 
@@ -1030,7 +1041,6 @@ async function aiSuggestMedicalRecord() {
         let treatmentText = "";
 
         if (isArabic) {
-            // Arabic format parsing
             const treatmentMatch = cleanText.match(/2\.\s*العلاج\s*المقتر[وح]:\s*([\s\S]*)/i);
 
             diagnosisText = cleanText
@@ -1040,7 +1050,6 @@ async function aiSuggestMedicalRecord() {
 
             treatmentText = treatmentMatch ? treatmentMatch[1].trim() : "";
         } else {
-            // English format parsing
             const treatmentMatch = cleanText.match(/2\.\s*Suggested Treatment:\s*([\s\S]*)/i);
 
             diagnosisText = cleanText
@@ -1061,7 +1070,7 @@ async function aiSuggestMedicalRecord() {
         alert("AI suggestion failed");
     } finally {
         aiButton.disabled = false;
-        aiButton.innerHTML = '<i class="fa-solid fa-robot"></i> AI Suggest';
+        aiButton.innerHTML = `<i class="fa-solid fa-robot"></i> ${t("aiSuggest")}`;
     }
 }
 
@@ -1071,7 +1080,7 @@ async function aiSuggestMedicalRecord() {
 
 async function loadReports() {
     if (!checkRoleAccess("Admin")) {
-        alert("Access denied. Only Admin can view reports.");
+        alert(t("accessDenied"));
         showSection("dashboardSection");
         return;
     }
@@ -1103,6 +1112,7 @@ async function loadAppointmentsReport() {
 
     appointments.forEach(appointment => {
         const statusClass = appointment.Status.toLowerCase();
+        const statusText = t(statusClass) || appointment.Status;
         tableBody.innerHTML += `
             <tr>
                 <td>${appointment.AppointmentId}</td>
@@ -1110,7 +1120,7 @@ async function loadAppointmentsReport() {
                 <td>${appointment.DoctorName}</td>
                 <td>${appointment.AppointmentDate.split("T")[0]}</td>
                 <td>${appointment.AppointmentTime}</td>
-                <td><span class="status-badge status-${statusClass}">${appointment.Status}</span></td>
+                <td><span class="status-badge status-${statusClass}">${statusText}</span></td>
             </tr>
         `;
     });
@@ -1135,6 +1145,7 @@ async function filterAppointments() {
 
     appointments.forEach(appointment => {
         const statusClass = appointment.Status.toLowerCase();
+        const statusText = t(statusClass) || appointment.Status;
         tableBody.innerHTML += `
             <tr>
                 <td>${appointment.AppointmentId}</td>
@@ -1142,7 +1153,7 @@ async function filterAppointments() {
                 <td>${appointment.DoctorName}</td>
                 <td>${appointment.AppointmentDate.split("T")[0]}</td>
                 <td>${appointment.AppointmentTime}</td>
-                <td><span class="status-badge status-${statusClass}">${appointment.Status}</span></td>
+                <td><span class="status-badge status-${statusClass}">${statusText}</span></td>
             </tr>
         `;
     });
@@ -1238,7 +1249,7 @@ function exportReport() {
 
 async function loadUsers() {
     if (!checkRoleAccess("Admin")) {
-        alert("Access denied. Only Admin can manage users.");
+        alert(t("accessDenied"));
         showSection("dashboardSection");
         return;
     }
@@ -1252,7 +1263,7 @@ async function loadUsers() {
 
 function openUserModal() {
     if (!checkRoleAccess("Admin")) {
-        alert("Access denied. Only Admin can add users.");
+        alert(t("accessDenied"));
         return;
     }
 
@@ -1267,7 +1278,7 @@ function openUserModal() {
 
 async function saveUser() {
     if (!checkRoleAccess("Admin")) {
-        alert("Access denied. Only Admin can manage users.");
+        alert(t("accessDenied"));
         return;
     }
 
@@ -1277,7 +1288,6 @@ async function saveUser() {
         role: document.getElementById("userRole").value
     };
 
-    // Validate using Validation module
     const validation = Validation.validateUserForm(user, !!window.currentUserId);
     if (!Validation.showErrors(validation.errors)) {
         return;
@@ -1316,11 +1326,11 @@ async function saveUser() {
 
 async function deleteUser(id) {
     if (!checkRoleAccess("Admin")) {
-        alert("Access denied. Only Admin can delete users.");
+        alert(t("accessDenied"));
         return;
     }
 
-    if (!confirm("Delete this user?")) return;
+    if (!confirm(t("confirmDelete"))) return;
 
     const response = await secureFetch(`http://localhost:4000/users/${id}`, {
         method: "DELETE"
@@ -1342,7 +1352,7 @@ async function deleteUser(id) {
 
 function editUser(id, username, role) {
     if (!checkRoleAccess("Admin")) {
-        alert("Access denied. Only Admin can edit users.");
+        alert(t("accessDenied"));
         return;
     }
 
@@ -1361,10 +1371,10 @@ function editUser(id, username, role) {
 
 function applyRolePermissions() {
     const role = localStorage.getItem("role");
-    document.getElementById("welcomeMessage").innerText = `Welcome ${role}`;
-
-    // Quick Action buttons
-    const quickActions = document.querySelectorAll('.quick-action-btn');
+    const welcomeEl = document.getElementById("welcomeMessage");
+    if (welcomeEl) {
+        welcomeEl.innerText = `${t("welcome")} ${role}`;
+    }
 
     if (role === "Admin") {
         return;
@@ -1379,7 +1389,6 @@ function applyRolePermissions() {
     }
 
     if (role === "Receptionist") {
-        // Hide sidebar menu items
         const doctorsMenu = document.querySelector(`li[onclick*="doctorsSection"]`);
         const medicalRecordsMenu = document.querySelector(`li[onclick*="medicalRecordsSection"]`);
         const usersMenu = document.querySelector(`li[onclick*="usersSection"]`);
@@ -1390,7 +1399,7 @@ function applyRolePermissions() {
         if (usersMenu) usersMenu.style.display = "none";
         if (reportsMenu) reportsMenu.style.display = "none";
 
-        // Hide Quick Action buttons: View Doctors and Add Record
+        const quickActions = document.querySelectorAll('.quick-action-btn');
         quickActions.forEach(btn => {
             const onclickAttr = btn.getAttribute('onclick') || '';
             if (onclickAttr.includes('doctorsSection') || onclickAttr.includes('medicalRecordsSection')) {
