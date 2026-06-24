@@ -352,7 +352,167 @@
             color: #00ff00 !important;
             border: 3px solid #00ff00;
         }
+    /* AI Consultations Dark Theme */
+    body.dark-theme #aiConsultationsSection .recent-section {
+        background: #1e293b !important;
+        border: 1px solid #334155;
+    }
+    body.dark-theme #aiConsultationsSection .recent-section h5,
+    body.dark-theme #aiConsultationsSection .recent-section p,
+    body.dark-theme #aiConsultationsSection .recent-section strong {
+        color: #e2e8f0 !important;
+    }
+    body.dark-theme #aiConsultationsSection .text-muted {
+        color: #94a3b8 !important;
+    }
+    body.dark-theme #aiConsultationsSection .text-primary {
+        color: #60a5fa !important;
+    }
+    body.dark-theme #aiConsultationsSection .text-success {
+        color: #34d399 !important;
+    }
+    /* High Contrast AI */
+    body.high-contrast #aiConsultationsSection .recent-section {
+        background: #000 !important;
+        border: 2px solid #00ff00;
+    }
+    body.high-contrast #aiConsultationsSection .recent-section h5,
+    body.high-contrast #aiConsultationsSection .recent-section p,
+    body.high-contrast #aiConsultationsSection .recent-section strong {
+        color: #fff !important;
+    }
+    body.high-contrast #aiConsultationsSection .text-muted {
+        color: #ffff00 !important;
+    }
+    /* Placeholder fixes */
+    body.dark-theme input::placeholder,
+    body.dark-theme textarea::placeholder {
+        color: #94a3b8 !important;
+        opacity: 1 !important;
+    }
+    body.dark-theme input::-webkit-input-placeholder,
+    body.dark-theme textarea::-webkit-input-placeholder {
+        color: #94a3b8 !important;
+    }
+    body.dark-theme input:-moz-placeholder,
+    body.dark-theme textarea:-moz-placeholder {
+        color: #94a3b8 !important;
+        opacity: 1 !important;
+    }
+    body.dark-theme input::-moz-placeholder,
+    body.dark-theme textarea::-moz-placeholder {
+        color: #94a3b8 !important;
+        opacity: 1 !important;
+    }
+    body.dark-theme input:-ms-input-placeholder,
+    body.dark-theme textarea:-ms-input-placeholder {
+        color: #94a3b8 !important;
+    }
+    body.high-contrast input::placeholder,
+    body.high-contrast textarea::placeholder {
+        color: #ffff00 !important;
+        opacity: 1 !important;
+    }
+    body.high-contrast input::-webkit-input-placeholder,
+    body.high-contrast textarea::-webkit-input-placeholder {
+        color: #ffff00 !important;
+    }
+    body.high-contrast input:-moz-placeholder,
+    body.high-contrast textarea:-moz-placeholder {
+        color: #ffff00 !important;
+        opacity: 1 !important;
+    }
+    body.high-contrast input::-moz-placeholder,
+    body.high-contrast textarea::-moz-placeholder {
+        color: #ffff00 !important;
+        opacity: 1 !important;
+    }
+    body.high-contrast input:-ms-input-placeholder,
+    body.high-contrast textarea:-ms-input-placeholder {
+        color: #ffff00 !important;
+    }
+    /* Section titles in dark */
+    body.dark-theme #aiConsultationsSection h1,
+    body.dark-theme #patientsSection h1,
+    body.dark-theme #doctorsSection h1,
+    body.dark-theme #appointmentsSection h1,
+    body.dark-theme #medicalRecordsSection h1,
+    body.dark-theme #reportsSection h1,
+    body.dark-theme #prescriptionsSection h1,
+    body.dark-theme #usersSection h1 {
+        color: #e2e8f0 !important;
+    }
+    body.high-contrast #aiConsultationsSection h1,
+    body.high-contrast #patientsSection h1,
+    body.high-contrast #doctorsSection h1,
+    body.high-contrast #appointmentsSection h1,
+    body.high-contrast #medicalRecordsSection h1,
+    body.high-contrast #reportsSection h1,
+    body.high-contrast #prescriptionsSection h1,
+    body.high-contrast #usersSection h1 {
+        color: #ffff00 !important;
+    }
+    /* Chatbot dark */
+    body.dark-theme .chatbot-messages {
+        background: #0f172a !important;
+    }
+    body.dark-theme .bot-message {
+        background: #1e293b !important;
+        color: #e2e8f0 !important;
+        border: 1px solid #334155;
+    }
+    body.dark-theme .user-message {
+        background: linear-gradient(135deg, #1e40af, #7c3aed) !important;
+        color: #fff !important;
+    }
+    body.high-contrast .chatbot-messages {
+        background: #000 !important;
+    }
+    body.high-contrast .bot-message {
+        background: #111 !important;
+        color: #fff !important;
+        border: 1px solid #ffff00;
+    }
+    body.high-contrast .user-message {
+        background: #000 !important;
+        color: #00ff00 !important;
+        border: 2px solid #00ff00;
+    }
+    /* Input group text */
+    body.dark-theme .input-group-text {
+        background: #334155 !important;
+        color: #94a3b8 !important;
+        border: 2px solid #334155;
+    }
+    body.high-contrast .input-group-text {
+        background: #000 !important;
+        color: #ffff00 !important;
+        border: 2px solid #ffff00;
+    }
+    /* Select options */
+    body.dark-theme select.form-control option {
+        background: #1e293b !important;
+        color: #e2e8f0 !important;
+    }
+    body.high-contrast select.form-control option {
+        background: #000 !important;
+        color: #fff !important;
+    }
+    /* Table text dark */
+    body.dark-theme .table tbody td {
+        color: #e2e8f0 !important;
+    }
+    body.dark-theme .table tbody tr:hover td {
+        background: #334155 !important;
+    }
+    body.high-contrast .table tbody td {
+        color: #fff !important;
+        font-weight: 600;
+    }
     </style>
+<base target="_blank">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <base target="_blank">
 <base target="_blank">
 </head>
@@ -386,6 +546,12 @@
             <li id="usersMenu" onclick="showSection('usersSection'); loadUsers()" data-i18n-html="users">
                 <i class="fa-solid fa-user-shield"></i> Users
             </li>
+            <li id="prescriptionsMenu" onclick="showSection('prescriptionsSection'); loadPrescriptions()" data-i18n-html="prescriptions">
+                <i class="fa-solid fa-prescription-bottle-medical"></i> Prescriptions
+            </li>
+            <li id="aiConsultationsMenu" onclick="showSection('aiConsultationsSection'); loadAIConsultations()" data-i18n-html="aiConsultations">
+                <i class="fa-solid fa-brain"></i> AI Consultations
+            </li>
             <li onclick="logout()" data-i18n-html="logout">
                 <i class="fa-solid fa-right-from-bracket"></i> Logout
             </li>
@@ -394,7 +560,7 @@
             <i class="fa-solid fa-globe"></i> <span data-i18n="language">العربية</span>
         </button>
         <button class="sidebar-toggle-btn" onclick="toggleTheme()" id="themeBtn">
-            <i class="fa-solid fa-moon" id="themeIcon"></i> <span id="themeLabel" data-i18n="darkMode">Dark Mode</span>
+            <i class="fa-solid fa-moon"></i> <span id="themeLabel">🌑 Dark Mode</span>
         </button>
     </div>
 
@@ -497,7 +663,7 @@
             <div class="mb-3">
                 <div class="input-group">
                     <span class="input-group-text"><i class="fa-solid fa-search"></i></span>
-                    <input type="text" class="form-control" placeholder="Search doctors..." onkeyup="searchDoctors(this.value)">
+                    <input type="text" class="form-control" placeholder="Search doctors..." data-i18n="searchDoctors" onkeyup="searchDoctors(this.value)">
                 </div>
             </div>
             <table class="table table-bordered table-hover">
@@ -531,7 +697,7 @@
             <div class="mb-3">
                 <div class="input-group">
                     <span class="input-group-text"><i class="fa-solid fa-search"></i></span>
-                    <input type="text" class="form-control" placeholder="Search appointments..." onkeyup="searchAppointments(this.value)">
+                    <input type="text" class="form-control" placeholder="Search appointments..." data-i18n="searchAppointments" onkeyup="searchAppointments(this.value)">
                 </div>
             </div>
             <table class="table table-bordered table-hover">
@@ -566,7 +732,7 @@
             <div class="mb-3">
                 <div class="input-group">
                     <span class="input-group-text"><i class="fa-solid fa-search"></i></span>
-                    <input type="text" class="form-control" placeholder="Search patients..." onkeyup="searchPatients(this.value)">
+                    <input type="text" class="form-control" placeholder="Search patients..." data-i18n="searchPatients" onkeyup="searchPatients(this.value)">
                 </div>
             </div>
             <table class="table table-bordered table-hover">
@@ -595,7 +761,7 @@
             <div class="mb-3">
                 <div class="input-group">
                     <span class="input-group-text"><i class="fa-solid fa-search"></i></span>
-                    <input type="text" class="form-control" placeholder="Search records..." onkeyup="searchMedicalRecords(this.value)">
+                    <input type="text" class="form-control" placeholder="Search records..." data-i18n="searchRecords" onkeyup="searchMedicalRecords(this.value)">
                 </div>
             </div>
             <table class="table table-bordered table-hover">
@@ -748,6 +914,61 @@
             </div>
         </div>
 
+        <!-- Prescriptions Section -->
+        <div id="prescriptionsSection" style="display:none;">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 data-i18n-html="prescriptions"><i class="fa-solid fa-prescription-bottle-medical"></i> Prescriptions</h1>
+                <div>
+                    <button class="btn btn-success me-2" onclick="openPrescriptionModal()">
+                        <i class="fa-solid fa-plus"></i> <span data-i18n="add">Add</span>
+                    </button>
+                    <button class="btn btn-primary" onclick="loadPrescriptions()">
+                        <i class="fa-solid fa-rotate"></i> <span data-i18n="refresh">Refresh</span>
+                    </button>
+                </div>
+            </div>
+            <div class="mb-3">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fa-solid fa-search"></i></span>
+                    <input type="text" class="form-control" placeholder="Search prescriptions..." data-i18n="searchPrescriptions" onkeyup="searchPrescriptions(this.value)">
+                </div>
+            </div>
+            <table class="table table-bordered table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th data-i18n="patient">Patient</th>
+                        <th data-i18n="doctor">Doctor</th>
+                        <th data-i18n="medicineName">Medicine</th>
+                        <th data-i18n="dosage">Dosage</th>
+                        <th data-i18n="instructions">Instructions</th>
+                        <th data-i18n="visitDate">Date</th>
+                        <th data-i18n="actions">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="prescriptionsTableBody"></tbody>
+            </table>
+        </div>
+
+        <!-- AI Consultations Section -->
+        <div id="aiConsultationsSection" style="display:none;">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 data-i18n-html="aiConsultations"><i class="fa-solid fa-brain"></i> AI Consultations</h1>
+                <div>
+                    <button class="btn btn-primary" onclick="loadAIConsultations()">
+                        <i class="fa-solid fa-rotate"></i> <span data-i18n="refresh">Refresh</span>
+                    </button>
+                </div>
+            </div>
+            <div class="mb-3">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fa-solid fa-search"></i></span>
+                    <input type="text" class="form-control" placeholder="Search consultations..." data-i18n="searchConsultations" onkeyup="searchAIConsultations(this.value)">
+                </div>
+            </div>
+            <div id="aiConsultationsList" class="row"></div>
+        </div>
+
         <!-- Users Section -->
         <div id="usersSection" style="display:none;">
             <div class="d-flex justify-content-between align-items-center mb-4">
@@ -759,7 +980,7 @@
             <div class="mb-3">
                 <div class="input-group">
                     <span class="input-group-text"><i class="fa-solid fa-search"></i></span>
-                    <input type="text" class="form-control" placeholder="Search users..." onkeyup="searchUsers(this.value)">
+                    <input type="text" class="form-control" placeholder="Search users..." data-i18n="searchUsers" onkeyup="searchUsers(this.value)">
                 </div>
             </div>
             <table class="table table-bordered table-hover">
@@ -825,6 +1046,42 @@
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="close">Close</button>
                 <button class="btn btn-success" onclick="addDoctor()">
+                    <i class="fa-solid fa-save"></i> <span data-i18n="save">Save</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Prescription Modal -->
+<div class="modal fade" id="prescriptionModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fa-solid fa-prescription-bottle-medical"></i> <span data-i18n="prescriptions">Prescription</span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label" data-i18n="medicalRecord">Medical Record</label>
+                    <select id="prescriptionRecordId" class="form-control"></select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" data-i18n="medicineName">Medicine Name</label>
+                    <input type="text" id="prescriptionMedicineName" class="form-control" placeholder="Medicine Name">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" data-i18n="dosage">Dosage</label>
+                    <input type="text" id="prescriptionDosage" class="form-control" placeholder="e.g. 500mg - 3 times daily">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" data-i18n="instructions">Instructions</label>
+                    <textarea id="prescriptionInstructions" class="form-control" placeholder="Instructions" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="close">Close</button>
+                <button class="btn btn-success" onclick="savePrescription()">
                     <i class="fa-solid fa-save"></i> <span data-i18n="save">Save</span>
                 </button>
             </div>
@@ -955,6 +1212,7 @@
     <i class="fa-solid fa-robot"></i> <span data-i18n="aiChat">AI Chat</span>
 </button>
 
+
 <script src="js/i18n.js"></script>
 <script src="js/validation.js"></script>
 <script>
@@ -991,14 +1249,13 @@ const ThemeManager = {
 
     updateLabel() {
         const label = document.getElementById('themeLabel');
-        const icon = document.getElementById('themeIcon');
         const btn = document.getElementById('themeBtn');
-        if (!label || !icon || !btn) return;
+        if (!label || !btn) return;
 
-        const keys = {
-            'default': 'darkMode',
-            'dark': 'highContrast',
-            'high-contrast': 'defaultTheme'
+        const labels = {
+            'default': '🌑 Dark Mode',
+            'dark': '👁️ High Contrast',
+            'high-contrast': '☀️ Default'
         };
 
         const icons = {
@@ -1007,23 +1264,8 @@ const ThemeManager = {
             'high-contrast': 'fa-sun'
         };
 
-        // Use translation if available, fallback to English
-        const key = keys[this.currentTheme];
-        const translated = (typeof I18n !== 'undefined' && I18n.get) ? I18n.get(key) : null;
-
-        if (translated && translated !== key) {
-            label.textContent = translated;
-        } else {
-            // Fallback labels
-            const fallbackLabels = {
-                'default': '🌑 Dark Mode',
-                'dark': '👁️ High Contrast',
-                'high-contrast': '☀️ Default'
-            };
-            label.textContent = fallbackLabels[this.currentTheme];
-        }
-
-        icon.className = `fa-solid ${icons[this.currentTheme]}`;
+        label.textContent = labels[this.currentTheme];
+        btn.querySelector('i').className = `fa-solid ${icons[this.currentTheme]}`;
     }
 };
 
