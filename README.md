@@ -162,27 +162,6 @@
 <li>⬜ دعم الصور والملفات المرفقة</li>
 </ul>
 <hr>
-<h2>🤝 المساهمة</h2>
-<p>نرحب بمساهماتكم! إذا وجدت خطأ أو تريد إضافة ميزة:</p>
-<ol>
-<li>Fork المشروع</li>
-<li>أنشئ فرع جديد (<code>git checkout -b feature/AmazingFeature</code>)</li>
-<li>Commit التغييرات (<code>git commit -m 'Add some AmazingFeature'</code>)</li>
-<li>Push للفرع (<code>git push origin feature/AmazingFeature</code>)</li>
-<li>افتح Pull Request</li>
-</ol>
-<hr>
-<h2>👨‍💻 المطور</h2>
-<div align="center">
-<p><strong>Amer Alsayid Hussain</strong></p>
-<p>📧 <a href="mailto:your.email@example.com">your.email@example.com</a></p>
-<p>
-  <a href="https://github.com/alsayidhussainamer-sudo">
-    <img src="https://img.shields.io/badge/GitHub-alsayidhussainamer--sudo-181717?logo=github" alt="GitHub">
-  </a>
-</p>
-</div>
-<hr>
 <div align="center">
 <p><strong>تم التطوير بواسطة:</strong> Amer Alsayid Hussain</p>
 <p>⭐ إذا أعجبك المشروع، لا تنسَ إعطائه نجمة!</p>
