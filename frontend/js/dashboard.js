@@ -204,10 +204,30 @@ async function loadDashboard() {
     const records = await recordsResponse.json();
     document.getElementById("recordsCount").innerText = records.length;
 
-    // Recent Appointments Table
+    // Recent Appointments Table - Sort: Scheduled first, then Cancelled, then Completed
     const recentTable = document.getElementById("recentAppointmentsTable");
     recentTable.innerHTML = "";
-    appointments.slice(0, 5).forEach(appointment => {
+
+    // Define priority: Scheduled (0) > Cancelled (1) > Completed (2)
+    const statusPriority = {
+        "Scheduled": 0,
+        "Cancelled": 1,
+        "Completed": 2
+    };
+
+    // Sort appointments by status priority, then by date (newest first)
+    const sortedAppointments = [...appointments].sort((a, b) => {
+        const priorityA = statusPriority[a.Status] !== undefined ? statusPriority[a.Status] : 0;
+        const priorityB = statusPriority[b.Status] !== undefined ? statusPriority[b.Status] : 0;
+
+        if (priorityA !== priorityB) {
+            return priorityA - priorityB; // Sort by status priority
+        }
+        // If same priority, sort by date (newest first)
+        return new Date(b.AppointmentDate) - new Date(a.AppointmentDate);
+    });
+
+    sortedAppointments.slice(0, 5).forEach(appointment => {
         const statusClass = appointment.Status.toLowerCase();
         const statusText = t(statusClass) || appointment.Status;
         recentTable.innerHTML += `
@@ -243,6 +263,8 @@ function showSection(sectionId) {
     document.getElementById("appointmentsSection").style.display = "none";
     document.getElementById("medicalRecordsSection").style.display = "none";
     document.getElementById("reportsSection").style.display = "none";
+    document.getElementById("prescriptionsSection").style.display = "none";
+    document.getElementById("aiConsultationsSection").style.display = "none";
     document.getElementById("usersSection").style.display = "none";
 
     document.getElementById(sectionId).style.display = "block";
@@ -256,6 +278,8 @@ let allPatients = [];
 let allDoctors = [];
 let allAppointments = [];
 let allMedicalRecords = [];
+let allPrescriptions = [];
+let allAIConsultations = [];
 let allUsers = [];
 
 function searchPatients(query) {
@@ -301,6 +325,24 @@ function searchUsers(query) {
         user.Role.toLowerCase().includes(query.toLowerCase())
     );
     renderUsersTable(filtered);
+}
+
+function searchPrescriptions(query) {
+    const filtered = allPrescriptions.filter(prescription =>
+        (prescription.PatientName && prescription.PatientName.toLowerCase().includes(query.toLowerCase())) ||
+        (prescription.DoctorName && prescription.DoctorName.toLowerCase().includes(query.toLowerCase())) ||
+        (prescription.MedicineName && prescription.MedicineName.toLowerCase().includes(query.toLowerCase()))
+    );
+    renderPrescriptionsTable(filtered);
+}
+
+function searchAIConsultations(query) {
+    const filtered = allAIConsultations.filter(consultation =>
+        (consultation.PatientName && consultation.PatientName.toLowerCase().includes(query.toLowerCase())) ||
+        (consultation.SymptomsText && consultation.SymptomsText.toLowerCase().includes(query.toLowerCase())) ||
+        (consultation.AIResponse && consultation.AIResponse.toLowerCase().includes(query.toLowerCase()))
+    );
+    renderAIConsultationsList(filtered);
 }
 
 // =========================
@@ -467,6 +509,78 @@ function renderUsersTable(users) {
                     </button>
                 </td>
             </tr>
+        `;
+    });
+}
+
+function renderPrescriptionsTable(prescriptions) {
+    const tableBody = document.getElementById("prescriptionsTableBody");
+    tableBody.innerHTML = "";
+
+    if (prescriptions.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">${t("noDataFound")}</td></tr>`;
+        return;
+    }
+
+    prescriptions.forEach(prescription => {
+        tableBody.innerHTML += `
+            <tr>
+                <td>${prescription.PrescriptionId}</td>
+                <td>${prescription.PatientName || "N/A"}</td>
+                <td>${prescription.DoctorName || "N/A"}</td>
+                <td>${prescription.MedicineName}</td>
+                <td>${prescription.Dosage || "-"}</td>
+                <td>${prescription.Instructions || "-"}</td>
+                <td>${prescription.VisitDate ? prescription.VisitDate.split("T")[0] : "-"}</td>
+                <td>
+                    <button class="btn btn-info btn-sm me-1" onclick="printPrescriptionPDF(${prescription.PrescriptionId})" title="${t("printPDF")}">
+                        <i class="fa-solid fa-file-pdf"></i>
+                    </button>
+                    <button class="btn btn-warning btn-sm me-1" onclick="editPrescription(${prescription.PrescriptionId})">
+                        <i class="fa-solid fa-pen"></i> ${t("edit")}
+                    </button>
+                    <button class="btn btn-danger btn-sm" onclick="deletePrescription(${prescription.PrescriptionId})">
+                        <i class="fa-solid fa-trash"></i> ${t("delete")}
+                    </button>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+function renderAIConsultationsList(consultations) {
+    const container = document.getElementById("aiConsultationsList");
+    container.innerHTML = "";
+
+    if (consultations.length === 0) {
+        container.innerHTML = `<div class="col-12 text-center py-4 text-muted">${t("noDataFound")}</div>`;
+        return;
+    }
+
+    consultations.forEach(consultation => {
+        const date = consultation.ConsultationDate ? new Date(consultation.ConsultationDate).toLocaleString() : "-";
+        container.innerHTML += `
+            <div class="col-md-6 mb-3">
+                <div class="recent-section">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5><i class="fa-solid fa-user"></i> ${consultation.PatientName || "Unknown Patient"}</h5>
+                        <span class="text-muted small">${date}</span>
+                    </div>
+                    <div class="mb-2">
+                        <strong><i class="fa-solid fa-stethoscope text-primary"></i> Symptoms:</strong>
+                        <p class="mb-1">${consultation.SymptomsText}</p>
+                    </div>
+                    <div class="mb-2">
+                        <strong><i class="fa-solid fa-robot text-success"></i> AI Response:</strong>
+                        <p class="mb-0 text-muted">${consultation.AIResponse}</p>
+                    </div>
+                    <div class="mt-3 text-end">
+                        <button class="btn btn-danger btn-sm" onclick="deleteAIConsultation(${consultation.ConsultationId})">
+                            <i class="fa-solid fa-trash"></i> ${t("delete")}
+                        </button>
+                    </div>
+                </div>
+            </div>
         `;
     });
 }
@@ -1004,8 +1118,160 @@ async function editMedicalRecord(id) {
     document.getElementById("recordVisitDate").value = record.VisitDate.split("T")[0];
 }
 
+// =========================
+// PRESCRIPTIONS
+// =========================
+
+async function loadPrescriptions() {
+    const response = await secureFetch("http://localhost:4000/prescriptions");
+    if (!response) return;
+
+    allPrescriptions = await response.json();
+    renderPrescriptionsTable(allPrescriptions);
+}
+
+async function openPrescriptionModal() {
+    window.currentPrescriptionId = null;
+
+    // Load medical records for dropdown
+    const recordsResponse = await secureFetch("http://localhost:4000/medical-records");
+    if (!recordsResponse) return;
+
+    const records = await recordsResponse.json();
+    const recordSelect = document.getElementById("prescriptionRecordId");
+    recordSelect.innerHTML = `<option value="">${t("selectRecord")}</option>`;
+
+    records.forEach(record => {
+        recordSelect.innerHTML += `
+            <option value="${record.RecordId}">${record.PatientName} - ${record.VisitDate.split("T")[0]}</option>
+        `;
+    });
+
+    document.getElementById("prescriptionMedicineName").value = "";
+    document.getElementById("prescriptionDosage").value = "";
+    document.getElementById("prescriptionInstructions").value = "";
+
+    const modal = new bootstrap.Modal(document.getElementById("prescriptionModal"));
+    modal.show();
+}
+
+async function savePrescription() {
+    const prescription = {
+        recordId: document.getElementById("prescriptionRecordId").value,
+        medicineName: document.getElementById("prescriptionMedicineName").value,
+        dosage: document.getElementById("prescriptionDosage").value,
+        instructions: document.getElementById("prescriptionInstructions").value
+    };
+
+    if (!prescription.recordId || !prescription.medicineName) {
+        alert("Record and Medicine Name are required");
+        return;
+    }
+
+    const url = window.currentPrescriptionId
+        ? `http://localhost:4000/prescriptions/${window.currentPrescriptionId}`
+        : "http://localhost:4000/prescriptions";
+
+    const method = window.currentPrescriptionId ? "PUT" : "POST";
+
+    const response = await secureFetch(url, {
+        method: method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(prescription)
+    });
+
+    if (!response) return;
+
+    const data = await response.json();
+
+    if (response.ok) {
+        const action = window.currentPrescriptionId ? "updated" : "added";
+        alert(`Prescription ${action} successfully`);
+        addActivity("add", `Prescription ${action}`);
+        loadPrescriptions();
+        window.currentPrescriptionId = null;
+        bootstrap.Modal.getInstance(document.getElementById("prescriptionModal")).hide();
+    } else {
+        alert(data.message);
+    }
+}
+
+async function deletePrescription(id) {
+    if (!confirm(t("confirmDelete"))) return;
+
+    const response = await secureFetch(`http://localhost:4000/prescriptions/${id}`, {
+        method: "DELETE"
+    });
+
+    if (!response) return;
+
+    const data = await response.json();
+
+    if (response.ok) {
+        alert("Prescription deleted successfully");
+        addActivity("delete", `Prescription #${id} deleted`);
+        loadPrescriptions();
+    } else {
+        alert(data.message);
+    }
+}
+
+async function editPrescription(id) {
+    const response = await secureFetch("http://localhost:4000/prescriptions");
+    if (!response) return;
+
+    const prescriptions = await response.json();
+    const prescription = prescriptions.find(p => p.PrescriptionId === id);
+
+    if (!prescription) {
+        alert("Prescription not found");
+        return;
+    }
+
+    await openPrescriptionModal();
+
+    window.currentPrescriptionId = id;
+    document.getElementById("prescriptionRecordId").value = prescription.RecordId;
+    document.getElementById("prescriptionMedicineName").value = prescription.MedicineName;
+    document.getElementById("prescriptionDosage").value = prescription.Dosage || "";
+    document.getElementById("prescriptionInstructions").value = prescription.Instructions || "";
+}
+
+// =========================
+// AI CONSULTATIONS
+// =========================
+
+async function loadAIConsultations() {
+    const response = await secureFetch("http://localhost:4000/ai-consultations");
+    if (!response) return;
+
+    allAIConsultations = await response.json();
+    renderAIConsultationsList(allAIConsultations);
+}
+
+async function deleteAIConsultation(id) {
+    if (!confirm(t("confirmDelete"))) return;
+
+    const response = await secureFetch(`http://localhost:4000/ai-consultations/${id}`, {
+        method: "DELETE"
+    });
+
+    if (!response) return;
+
+    const data = await response.json();
+
+    if (response.ok) {
+        alert("AI Consultation deleted successfully");
+        addActivity("delete", `AI Consultation #${id} deleted`);
+        loadAIConsultations();
+    } else {
+        alert(data.message);
+    }
+}
+
 async function aiSuggestMedicalRecord() {
     const symptoms = document.getElementById("recordSymptoms").value;
+    const patientId = document.getElementById("recordPatientId").value;
     const aiButton = document.getElementById("aiSuggestButton");
 
     if (!symptoms || symptoms.trim() === "") {
@@ -1020,7 +1286,10 @@ async function aiSuggestMedicalRecord() {
         const response = await secureFetch("http://localhost:4000/api/ai/suggest", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ symptoms })
+            body: JSON.stringify({ 
+                symptoms: symptoms,
+                patientId: patientId || null
+            })
         });
 
         if (!response) return;
@@ -1393,11 +1662,15 @@ function applyRolePermissions() {
         const medicalRecordsMenu = document.querySelector(`li[onclick*="medicalRecordsSection"]`);
         const usersMenu = document.querySelector(`li[onclick*="usersSection"]`);
         const reportsMenu = document.querySelector(`li[onclick*="reportsSection"]`);
+        const prescriptionsMenu = document.querySelector(`li[onclick*="prescriptionsSection"]`);
+        const aiConsultationsMenu = document.querySelector(`li[onclick*="aiConsultationsSection"]`);
 
         if (doctorsMenu) doctorsMenu.style.display = "none";
         if (medicalRecordsMenu) medicalRecordsMenu.style.display = "none";
         if (usersMenu) usersMenu.style.display = "none";
         if (reportsMenu) reportsMenu.style.display = "none";
+        if (prescriptionsMenu) prescriptionsMenu.style.display = "none";
+        if (aiConsultationsMenu) aiConsultationsMenu.style.display = "none";
 
         const quickActions = document.querySelectorAll('.quick-action-btn');
         quickActions.forEach(btn => {
@@ -1473,6 +1746,264 @@ async function sendChatbotMessage() {
     }
 
     messagesBox.scrollTop = messagesBox.scrollHeight;
+}
+
+
+// =========================
+// PRINT PRESCRIPTION PDF (window.print + html2canvas - Full Arabic Support)
+// =========================
+
+async function printPrescriptionPDF(prescriptionId) {
+    const prescription = allPrescriptions.find(p => p.PrescriptionId === prescriptionId);
+    if (!prescription) {
+        alert(t("noDataFound"));
+        return;
+    }
+
+    const btn = document.querySelector(`button[onclick="printPrescriptionPDF(${prescriptionId})"]`);
+    const originalHtml = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+    btn.disabled = true;
+
+    try {
+        const isRTL = I18n.currentLang === 'ar';
+        const dateStr = prescription.VisitDate ? prescription.VisitDate.split("T")[0] : new Date().toISOString().split("T")[0];
+        const timeStr = new Date().toLocaleTimeString();
+
+        // Build HTML content for the prescription
+        const htmlContent = `
+<!DOCTYPE html>
+<html lang="${isRTL ? 'ar' : 'en'}" dir="${isRTL ? 'rtl' : 'ltr'}">
+<head>
+    <meta charset="UTF-8">
+    <title>${isRTL ? 'وصفة طبية' : 'Medical Prescription'} - ${prescription.PatientName || 'Patient'}</title>
+    <style>
+        @page { size: A4; margin: 0; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            background: #fff;
+            color: #1e293b;
+            padding: 20mm;
+            width: 210mm;
+            min-height: 297mm;
+        }
+        .header {
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h1 { font-size: 28px; margin: 0; }
+        .header p { font-size: 14px; margin: 5px 0 0 0; opacity: 0.9; }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            background: #f1f5f9;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .info-row > div:first-child p:first-child,
+        .info-row > div:last-child p:first-child { font-size: 12px; color: #64748b; margin: 0; }
+        .info-row > div:first-child p:last-child,
+        .info-row > div:last-child p:last-child { font-size: 13px; color: #1e293b; margin: 5px 0 0 0; }
+        .info-row > div:last-child { text-align: right; }
+        .card-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .card {
+            flex: 1;
+            border: 2px solid #1e40af;
+            border-radius: 10px;
+            padding: 15px;
+        }
+        .card h3 { color: #1e40af; font-size: 14px; margin: 0 0 10px 0; font-weight: 600; }
+        .card p { margin: 0; font-size: 13px; color: #1e293b; }
+        .card p.small { margin: 5px 0 0 0; font-size: 12px; color: #475569; }
+        .section-title {
+            color: #1e40af;
+            font-size: 18px;
+            margin: 0 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .medicine-box {
+            background: #f1f5f9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        .medicine-box p.label { font-size: 13px; color: #64748b; font-weight: 600; margin: 0 0 8px 0; }
+        .medicine-box p.value { font-size: 16px; color: #1e293b; font-weight: 700; margin: 0; }
+        .medicine-box p.dosage { font-size: 14px; color: #1e293b; margin: 15px 0 0 0; }
+        .instructions-box {
+            background: #fffbeb;
+            border: 2px solid #f59e0b;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .instructions-box p.label { font-size: 13px; color: #b45309; font-weight: 600; margin: 0 0 8px 0; }
+        .instructions-box p.value { font-size: 14px; color: #1e293b; line-height: 1.6; margin: 0; }
+        .footer {
+            margin-top: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        .footer .note { font-size: 11px; color: #94a3b8; font-style: italic; }
+        .footer .signature { text-align: center; }
+        .footer .signature .line { border-top: 2px solid #1e293b; width: 150px; margin-bottom: 8px; }
+        .footer .signature p { margin: 0; font-size: 13px; color: #1e293b; font-weight: 600; }
+        @media print {
+            body { padding: 0; }
+            .no-print { display: none; }
+        }
+        .print-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #1e40af;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 10000;
+        }
+        .print-btn:hover { background: #1e3a8a; }
+        .download-btn {
+            position: fixed;
+            top: 20px;
+            right: 140px;
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 10000;
+        }
+    </style>
+</head>
+<body>
+    <button class="print-btn no-print" onclick="window.print()">🖨️ ${isRTL ? 'طباعة' : 'Print'}</button>
+    <button class="download-btn no-print" onclick="downloadPDF()">💾 ${isRTL ? 'تحميل PDF' : 'Download PDF'}</button>
+
+    <div class="header">
+        <h1>${isRTL ? '🏥 العيادة الذكية' : '🏥 Smart Clinic'}</h1>
+        <p>${isRTL ? 'وصفة طبية' : 'Medical Prescription'}</p>
+    </div>
+
+    <div class="info-row">
+        <div>
+            <p>${isRTL ? 'معلومات العيادة' : 'Clinic Info'}</p>
+            <p>${isRTL ? 'نظام العيادة الذكية' : 'Smart Clinic System'}</p>
+            <p style="margin-top:2px; font-size:12px; color:#475569;">${isRTL ? 'هاتف: +963-xxx-xxx-xxx' : 'Phone: +963-xxx-xxx-xxx'}</p>
+        </div>
+        <div>
+            <p>${isRTL ? 'وصفة رقم' : 'Prescription #'}${prescription.PrescriptionId}</p>
+            <p>${isRTL ? 'التاريخ:' : 'Date:'} ${dateStr}</p>
+            <p style="margin-top:2px; font-size:12px; color:#475569;">${isRTL ? 'الوقت:' : 'Time:'} ${timeStr}</p>
+        </div>
+    </div>
+
+    <div class="card-row">
+        <div class="card">
+            <h3>${isRTL ? '👤 معلومات المريض' : '👤 PATIENT INFORMATION'}</h3>
+            <p><strong>${isRTL ? 'الاسم:' : 'Name:'}</strong> ${prescription.PatientName || 'N/A'}</p>
+            <p class="small">${isRTL ? 'رقم المريض:' : 'Patient ID:'} ${prescription.PatientId || 'N/A'}</p>
+        </div>
+        <div class="card">
+            <h3>${isRTL ? '👨‍⚕️ معلومات الطبيب' : '👨‍⚕️ DOCTOR INFORMATION'}</h3>
+            <p><strong>${isRTL ? 'الاسم:' : 'Name:'}</strong> ${prescription.DoctorName || 'N/A'}</p>
+            <p class="small">${isRTL ? 'رقم الطبيب:' : 'Doctor ID:'} ${prescription.DoctorId || 'N/A'}</p>
+        </div>
+    </div>
+
+    <h2 class="section-title">${isRTL ? '💊 الوصفة الطبية' : '💊 PRESCRIPTION'}</h2>
+
+    <div class="medicine-box">
+        <p class="label">${isRTL ? 'الدواء:' : 'Medicine:'}</p>
+        <p class="value">${prescription.MedicineName || 'N/A'}</p>
+        <p class="dosage"><strong>${isRTL ? 'الجرعة:' : 'Dosage:'}</strong> ${prescription.Dosage || (isRTL ? 'حسب توجيهات الطبيب' : 'As directed by physician')}</p>
+    </div>
+
+    <div class="instructions-box">
+        <p class="label">⚠️ ${isRTL ? 'التعليمات:' : 'Instructions:'}</p>
+        <p class="value">${prescription.Instructions || (isRTL ? 'اتبع تعليمات الطبيب.' : 'Take as prescribed by your doctor.')}</p>
+    </div>
+
+    <div class="footer">
+        <div class="note">
+            <p>${isRTL ? 'تم إنشاء هذه الوصفة بواسطة نظام العيادة الذكية.' : 'Generated by Smart Clinic System.'}</p>
+            <p>${isRTL ? 'يرجى استشارة الطبيب لأي استفسارات.' : 'Please consult your doctor for any questions.'}</p>
+        </div>
+        <div class="signature">
+            <div class="line"></div>
+            <p>${isRTL ? 'توقيع الطبيب' : "Doctor's Signature"}</p>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        async function downloadPDF() {
+            const btn = document.querySelector('.download-btn');
+            btn.textContent = '${isRTL ? 'جاري التحميل...' : 'Downloading...'}';
+            btn.disabled = true;
+            try {
+                const canvas = await html2canvas(document.body, {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#ffffff',
+                    onclone: function(clonedDoc) {
+                        const btns = clonedDoc.querySelectorAll('.no-print');
+                        btns.forEach(b => b.style.display = 'none');
+                    }
+                });
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+                const imgData = canvas.toDataURL('image/png');
+                const pdfWidth = 210;
+                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                pdf.save('Prescription_${(prescription.PatientName || "Patient").replace(/\s+/g, "_")}_${dateStr}.pdf');
+            } catch(e) {
+                console.error(e);
+                alert('${isRTL ? 'فشل التحميل' : 'Download failed'}');
+            } finally {
+                btn.textContent = '💾 ${isRTL ? 'تحميل PDF' : 'Download PDF'}';
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>`;
+
+        // Open new window with the prescription
+        const printWindow = window.open('', '_blank', 'width=900,height=1200,scrollbars=yes');
+        printWindow.document.write(htmlContent);
+        printWindow.document.close();
+
+        addActivity("add", `Prescription #${prescriptionId} opened for print/PDF`);
+
+    } catch (error) {
+        console.error("PDF generation error:", error);
+        alert(isRTL ? "فشل فتح الوصفة. حاول مرة أخرى." : "Failed to open prescription. Please try again.");
+    } finally {
+        btn.innerHTML = originalHtml;
+        btn.disabled = false;
+    }
 }
 
 // =========================
