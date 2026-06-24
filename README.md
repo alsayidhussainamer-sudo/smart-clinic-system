@@ -44,27 +44,6 @@
 <li>دعم اللغة العربية والإنجليزية</li>
 </ul>
 <hr>
-<h2>🚀 كيفية التشغيل</h2>
-<h3>1. استنساخ المشروع</h3>
-<pre><code>git clone https://github.com/alsayidhussainamer-sudo/smart-clinic-system.git
-cd smart-clinic-system</code></pre>
-<h3>2. تثبيت المتطلبات</h3>
-<pre><code>npm install</code></pre>
-<h3>3. إعداد قاعدة البيانات</h3>
-<p>أنشئ قاعدة بيانات MySQL، ثم عدّل ملف <code>.env</code> ببيانات الاتصال:</p>
-<pre><code>DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=your_password
-DB_NAME=smart_clinic_system
-JWT_SECRET=your_jwt_secret
-OPENROUTER_API_KEY=your_openrouter_key</code></pre>
-<h3>4. تشغيل السيرفر</h3>
-<pre><code>nodemon server.js</code></pre>
-<p>أو</p>
-<pre><code>npm start</code></pre>
-<h3>5. فتح التطبيق</h3>
-<pre><code>http://localhost:4000</code></pre>
-<hr>
 <h2>📁 هيكل المشروع</h2>
 <pre><code>smart-clinic-system/
 ├── controllers/          # منطق التطبيق
@@ -135,99 +114,27 @@ OPENROUTER_API_KEY=your_openrouter_key</code></pre>
 <h3>📋 السجلات الطبية</h3>
 <img src="https://raw.githubusercontent.com/alsayidhussainamer-sudo/smart-clinic-system/main/screenshots/6. medical-records.jpg" width="100%" alt="Medical Records">
 <br><br>
-<h3>💊 الوصفات الطبية</h3>
-<img src="https://raw.githubusercontent.com/alsayidhussainamer-sudo/smart-clinic-system/main/screenshots/prescriptions.jpg" width="100%" alt="Prescriptions">
-<br><br>
-<h3>🤖 استشارات الذكاء الاصطناعي</h3>
-<img src="https://raw.githubusercontent.com/alsayidhussainamer-sudo/smart-clinic-system/main/screenshots/ai-consultations.jpg" width="100%" alt="AI Consultations">
-<br><br>
-<h3>🖨️ طباعة الوصفة PDF</h3>
-<img src="https://raw.githubusercontent.com/alsayidhussainamer-sudo/smart-clinic-system/main/screenshots/pdf-print.jpg" width="100%" alt="PDF Print">
-<br><br>
-<h3>🌙 الوضع الداكن</h3>
-<img src="https://raw.githubusercontent.com/alsayidhussainamer-sudo/smart-clinic-system/main/screenshots/dark-mode.jpg" width="100%" alt="Dark Mode">
-<br><br>
-<h3>👁️ وضع التباين العالي</h3>
-<img src="https://raw.githubusercontent.com/alsayidhussainamer-sudo/smart-clinic-system/main/screenshots/high-contrast.jpg" width="100%" alt="High Contrast">
-<br><br>
 <h3>📊 التقارير</h3>
 <img src="https://raw.githubusercontent.com/alsayidhussainamer-sudo/smart-clinic-system/main/screenshots/7. reports.jpg" width="100%" alt="Reports">
+<h3>💊 الوصفات الطبية</h3>
+<img src="https://raw.githubusercontent.com/alsayidhussainamer-sudo/smart-clinic-system/main/screenshots/6. medical-records.jpg" width="100%" alt="Prescriptions">
+<br><br>
+<h3>🖨️ طباعة الوصفة PDF</h3>
+<img src="https://raw.githubusercontent.com/alsayidhussainamer-sudo/smart-clinic-system/main/screenshots/9. pdf-print.jpg" width="100%" alt="PDF Print">
+<br><br>
+<h3>🤖 استشارات الذكاء الاصطناعي</h3>
+<img src="https://raw.githubusercontent.com/alsayidhussainamer-sudo/smart-clinic-system/main/screenshots/10. ai-consultations.jpg" width="100%" alt="AI Consultations">
+<br><br>
+<h3>👥 المستخدمين</h3>
+<img src="https://raw.githubusercontent.com/alsayidhussainamer-sudo/smart-clinic-system/main/screenshots/11. Users.jpg" width="100%" alt="AI Consultations">
+<br><br>
+<h3>🌙 الوضع الداكن</h3>
+<img src="https://raw.githubusercontent.com/alsayidhussainamer-sudo/smart-clinic-system/main/screenshots/12. dark-mode.jpg" width="100%" alt="Dark Mode">
+<br><br>
+<h3>👁️ وضع التباين العالي</h3>
+<img src="https://raw.githubusercontent.com/alsayidhussainamer-sudo/smart-clinic-system/main/screenshots/13. high-contrast.jpg" width="100%" alt="High Contrast">
+
 </div>
-<hr>
-<h2>🔌 API Endpoints</h2>
-<h3>المصادقة</h3>
-<table>
-<tr><th>Method</th><th>Endpoint</th><th>الوصف</th></tr>
-<tr><td>POST</td><td>/users/register</td><td>تسجيل مستخدم جديد</td></tr>
-<tr><td>POST</td><td>/users/login</td><td>تسجيل الدخول</td></tr>
-</table>
-<h3>المرضى</h3>
-<table>
-<tr><th>Method</th><th>Endpoint</th><th>الوصف</th></tr>
-<tr><td>GET</td><td>/patients</td><td>قائمة المرضى</td></tr>
-<tr><td>POST</td><td>/patients</td><td>إضافة مريض</td></tr>
-<tr><td>GET</td><td>/patients/:id</td><td>تفاصيل مريض</td></tr>
-<tr><td>PUT</td><td>/patients/:id</td><td>تعديل مريض</td></tr>
-<tr><td>DELETE</td><td>/patients/:id</td><td>حذف مريض</td></tr>
-</table>
-<h3>الأطباء</h3>
-<table>
-<tr><th>Method</th><th>Endpoint</th><th>الوصف</th></tr>
-<tr><td>GET</td><td>/doctors</td><td>قائمة الأطباء</td></tr>
-<tr><td>POST</td><td>/doctors</td><td>إضافة طبيب</td></tr>
-<tr><td>PUT</td><td>/doctors/:id</td><td>تعديل طبيب</td></tr>
-<tr><td>DELETE</td><td>/doctors/:id</td><td>حذف طبيب</td></tr>
-</table>
-<h3>المواعيد</h3>
-<table>
-<tr><th>Method</th><th>Endpoint</th><th>الوصف</th></tr>
-<tr><td>GET</td><td>/appointments</td><td>قائمة المواعيد</td></tr>
-<tr><td>POST</td><td>/appointments</td><td>إضافة موعد</td></tr>
-<tr><td>PUT</td><td>/appointments/:id</td><td>تعديل موعد</td></tr>
-<tr><td>DELETE</td><td>/appointments/:id</td><td>حذف موعد</td></tr>
-</table>
-<h3>السجلات الطبية</h3>
-<table>
-<tr><th>Method</th><th>Endpoint</th><th>الوصف</th></tr>
-<tr><td>GET</td><td>/medical-records</td><td>قائمة السجلات</td></tr>
-<tr><td>POST</td><td>/medical-records</td><td>إضافة سجل</td></tr>
-<tr><td>PUT</td><td>/medical-records/:id</td><td>تعديل سجل</td></tr>
-<tr><td>DELETE</td><td>/medical-records/:id</td><td>حذف سجل</td></tr>
-</table>
-<h3>الوصفات الطبية</h3>
-<table>
-<tr><th>Method</th><th>Endpoint</th><th>الوصف</th></tr>
-<tr><td>GET</td><td>/prescriptions</td><td>قائمة الوصفات</td></tr>
-<tr><td>GET</td><td>/prescriptions/record/:id</td><td>وصفات سجل معين</td></tr>
-<tr><td>POST</td><td>/prescriptions</td><td>إضافة وصفة</td></tr>
-<tr><td>PUT</td><td>/prescriptions/:id</td><td>تعديل وصفة</td></tr>
-<tr><td>DELETE</td><td>/prescriptions/:id</td><td>حذف وصفة</td></tr>
-</table>
-<h3>التقارير (Admin فقط)</h3>
-<table>
-<tr><th>Method</th><th>Endpoint</th><th>الوصف</th></tr>
-<tr><td>GET</td><td>/reports/appointments</td><td>تقرير المواعيد</td></tr>
-<tr><td>GET</td><td>/reports/doctors</td><td>تقرير الأطباء</td></tr>
-<tr><td>GET</td><td>/reports/patients</td><td>تقرير المرضى</td></tr>
-<tr><td>GET</td><td>/reports/statistics</td><td>الإحصائيات العامة</td></tr>
-</table>
-<h3>AI</h3>
-<table>
-<tr><th>Method</th><th>Endpoint</th><th>الوصف</th></tr>
-<tr><td>POST</td><td>/api/ai/suggest</td><td>اقتراح طبي حسب الأعراض</td></tr>
-<tr><td>POST</td><td>/api/ai/chat</td><td>محادثة مع الـ Chatbot</td></tr>
-<tr><td>GET</td><td>/ai-consultations</td><td>سجل الاستشارات</td></tr>
-</table>
-<hr>
-<h2>🧪 اختبار النظام</h2>
-<pre><code># اختبار تسجيل الدخول
-curl -X POST http://localhost:4000/users/login \
-  -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"admin123"}'
-اختبار قائمة المرضى (مع token)
-curl -H "Authorization: Bearer YOUR_TOKEN" 
-http://localhost:4000/patients
-<hr>
 <h2>🛡️ الأمان</h2>
 <ul>
 <li>✅ تشفير كلمات المرور بـ bcrypt (10 rounds)</li>
@@ -277,6 +184,6 @@ http://localhost:4000/patients
 </div>
 <hr>
 <div align="center">
-<p><strong>⭐ إذا أعجبك المشروع، لا تنسَ إعطائه نجمة! ⭐</strong></p>
-<p><sub>Built with ❤️ for better healthcare management</sub></p>
+<p><strong>تم التطوير بواسطة:</strong> Amer Alsayid Hussain</p>
+<p>⭐ إذا أعجبك المشروع، لا تنسَ إعطائه نجمة!</p>
 </div>
