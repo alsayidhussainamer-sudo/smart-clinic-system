@@ -68,15 +68,15 @@ exports.updateDoctor = (req, res) => {
 
     const doctorId = req.params.id;
 
-    const { fullName, phone, email } = req.body;
+    const { fullName, phone, email, specialtyId } = req.body;
 
     const sql = `
         UPDATE doctors
-        SET FullName = ?, Phone = ?, Email = ?
+        SET FullName = ?, Phone = ?, Email = ?, SpecialtyId = ?
         WHERE DoctorId = ?
     `;
 
-    db.query(sql, [fullName, phone, email, doctorId], (err) => {
+    db.query(sql, [fullName, phone, email, specialtyId, doctorId], (err) => {
 
         if (err) {
             console.log(err);

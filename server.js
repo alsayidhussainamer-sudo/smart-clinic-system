@@ -18,6 +18,8 @@ const userRoutes = require("./routes/userRoutes");
 const medicalRecordRoutes = require("./routes/medicalRecordRoutes");
 const aiRoutes = require("./routes/aiRoutes");
 const reportsRoutes = require("./routes/reportsRoutes");
+const prescriptionRoutes = require("./routes/prescriptionRoutes");
+const aiConsultationRoutes = require("./routes/aiConsultationRoutes");
 
 app.get("/", (req, res) => {
     res.send("Smart Clinic System Backend is Running 🚀");
@@ -31,6 +33,8 @@ app.use("/users", userRoutes);
 app.use("/medical-records", medicalRecordRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/reports", reportsRoutes);
+app.use("/prescriptions", prescriptionRoutes);
+app.use("/ai-consultations", aiConsultationRoutes);
 
 app.use(express.static("frontend"));
 
