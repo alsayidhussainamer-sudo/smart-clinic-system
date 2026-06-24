@@ -879,3 +879,210 @@
 .dashboard-card, .quick-action-btn, .recent-section, .recent-activities, .chart-container {
     animation: fadeIn 0.5s ease-out;
 }
+/* ========================= */
+/* AI CONSULTATIONS DARK THEME */
+/* ========================= */
+
+body.dark-theme #aiConsultationsSection .recent-section {
+    background: #1e293b !important;
+    border: 1px solid #334155;
+}
+
+body.dark-theme #aiConsultationsSection .recent-section h5,
+body.dark-theme #aiConsultationsSection .recent-section p,
+body.dark-theme #aiConsultationsSection .recent-section strong {
+    color: #e2e8f0 !important;
+}
+
+body.dark-theme #aiConsultationsSection .text-muted {
+    color: #94a3b8 !important;
+}
+
+body.dark-theme #aiConsultationsSection .text-primary {
+    color: #60a5fa !important;
+}
+
+body.dark-theme #aiConsultationsSection .text-success {
+    color: #34d399 !important;
+}
+
+/* AI Consultations High Contrast */
+body.high-contrast #aiConsultationsSection .recent-section {
+    background: #000 !important;
+    border: 2px solid #00ff00;
+}
+
+body.high-contrast #aiConsultationsSection .recent-section h5,
+body.high-contrast #aiConsultationsSection .recent-section p,
+body.high-contrast #aiConsultationsSection .recent-section strong {
+    color: #fff !important;
+}
+
+body.high-contrast #aiConsultationsSection .text-muted {
+    color: #ffff00 !important;
+}
+
+body.high-contrast #aiConsultationsSection .text-primary {
+    color: #00ff00 !important;
+}
+
+body.high-contrast #aiConsultationsSection .text-success {
+    color: #00ff00 !important;
+}
+
+/* ========================= */
+/* SEARCH INPUT PLACEHOLDER  */
+/* ========================= */
+
+/* Dark theme placeholder */
+body.dark-theme .form-control::placeholder {
+    color: #94a3b8 !important;
+    opacity: 1;
+}
+
+body.dark-theme .form-control:-ms-input-placeholder {
+    color: #94a3b8 !important;
+}
+
+body.dark-theme .form-control::-ms-input-placeholder {
+    color: #94a3b8 !important;
+}
+
+/* High contrast placeholder */
+body.high-contrast .form-control::placeholder {
+    color: #ffff00 !important;
+    opacity: 1;
+}
+
+body.high-contrast .form-control:-ms-input-placeholder {
+    color: #ffff00 !important;
+}
+
+body.high-contrast .form-control::-ms-input-placeholder {
+    color: #ffff00 !important;
+}
+
+/* ========================= */
+/* TABLE TEXT IN DARK THEME  */
+/* ========================= */
+
+body.dark-theme .table tbody td {
+    color: #e2e8f0 !important;
+}
+
+body.dark-theme .table tbody tr:hover td {
+    background: #334155 !important;
+}
+
+/* High contrast table text */
+body.high-contrast .table tbody td {
+    color: #fff !important;
+    font-weight: 600;
+}
+
+/* ========================= */
+/* MODAL INPUTS DARK THEME   */
+/* ========================= */
+
+body.dark-theme .modal-body input::placeholder,
+body.dark-theme .modal-body select::placeholder,
+body.dark-theme .modal-body textarea::placeholder {
+    color: #94a3b8 !important;
+}
+
+body.high-contrast .modal-body input::placeholder,
+body.high-contrast .modal-body select::placeholder,
+body.high-contrast .modal-body textarea::placeholder {
+    color: #ffff00 !important;
+}
+
+/* ========================= */
+/* SECTION TITLES DARK THEME */
+/* ========================= */
+
+body.dark-theme #aiConsultationsSection h1,
+body.dark-theme #patientsSection h1,
+body.dark-theme #doctorsSection h1,
+body.dark-theme #appointmentsSection h1,
+body.dark-theme #medicalRecordsSection h1,
+body.dark-theme #reportsSection h1,
+body.dark-theme #prescriptionsSection h1,
+body.dark-theme #usersSection h1 {
+    color: #e2e8f0 !important;
+}
+
+body.high-contrast #aiConsultationsSection h1,
+body.high-contrast #patientsSection h1,
+body.high-contrast #doctorsSection h1,
+body.high-contrast #appointmentsSection h1,
+body.high-contrast #medicalRecordsSection h1,
+body.high-contrast #reportsSection h1,
+body.high-contrast #prescriptionsSection h1,
+body.high-contrast #usersSection h1 {
+    color: #ffff00 !important;
+}
+
+/* ========================= */
+/* CHATBOT MESSAGES DARK     */
+/* ========================= */
+
+body.dark-theme .chatbot-messages {
+    background: #0f172a !important;
+}
+
+body.dark-theme .bot-message {
+    background: #1e293b !important;
+    color: #e2e8f0 !important;
+    border: 1px solid #334155;
+}
+
+body.dark-theme .user-message {
+    background: linear-gradient(135deg, #1e40af, #7c3aed) !important;
+    color: #fff !important;
+}
+
+body.high-contrast .chatbot-messages {
+    background: #000 !important;
+}
+
+body.high-contrast .bot-message {
+    background: #111 !important;
+    color: #fff !important;
+    border: 1px solid #ffff00;
+}
+
+body.high-contrast .user-message {
+    background: #000 !important;
+    color: #00ff00 !important;
+    border: 2px solid #00ff00;
+}
+
+/* ========================= */
+/* INPUT GROUP TEXT DARK     */
+/* ========================= */
+
+body.dark-theme .input-group-text {
+    background: #334155 !important;
+    color: #94a3b8 !important;
+    border: 2px solid #334155;
+}
+
+body.high-contrast .input-group-text {
+    background: #000 !important;
+    color: #ffff00 !important;
+    border: 2px solid #ffff00;
+}
+
+/* ========================= */
+/* SELECT OPTIONS DARK       */
+/* ========================= */
+
+body.dark-theme select.form-control option {
+    background: #1e293b !important;
+    color: #e2e8f0 !important;
+}
+
+body.high-contrast select.form-control option {
+    background: #000 !important;
+    color: #fff !important;
+}
