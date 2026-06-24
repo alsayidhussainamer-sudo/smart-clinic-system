@@ -102,7 +102,27 @@ const translations = {
         // Themes
         darkMode: "Dark Mode",
         highContrast: "High Contrast",
-        defaultTheme: "Default Theme"
+        defaultTheme: "Default Theme",
+
+        // Prescriptions
+        prescriptions: "Prescriptions",
+        medicineName: "Medicine Name",
+        dosage: "Dosage",
+        instructions: "Instructions",
+        selectRecord: "Select Medical Record",
+        medicalRecord: "Medical Record",
+
+        // AI Consultations
+        aiConsultations: "AI Consultations",
+        print: "Print",
+        printPDF: "Print PDF",
+        searchDoctors: "Search doctors...",
+        searchAppointments: "Search appointments...",
+        searchPatients: "Search patients...",
+        searchRecords: "Search records...",
+        searchPrescriptions: "Search prescriptions...",
+        searchUsers: "Search users...",
+        searchConsultations: "Search consultations..."
     },
 
     ar: {
@@ -204,7 +224,27 @@ const translations = {
         // Themes
         darkMode: "الوضع الداكن",
         highContrast: "تباين عالي",
-        defaultTheme: "الوضع الافتراضي"
+        defaultTheme: "الوضع الافتراضي",
+
+        // Prescriptions
+        prescriptions: "الوصفات الطبية",
+        medicineName: "اسم الدواء",
+        dosage: "الجرعة",
+        instructions: "التعليمات",
+        selectRecord: "اختر السجل الطبي",
+        medicalRecord: "السجل الطبي",
+
+        // AI Consultations
+        aiConsultations: "استشارات الذكاء الاصطناعي",
+        print: "طباعة",
+        printPDF: "طباعة PDF",
+        searchDoctors: "البحث في الأطباء...",
+        searchAppointments: "البحث في المواعيد...",
+        searchPatients: "البحث في المرضى...",
+        searchRecords: "البحث في السجلات...",
+        searchPrescriptions: "البحث في الوصفات...",
+        searchUsers: "البحث في المستخدمين...",
+        searchConsultations: "البحث في الاستشارات..."
     }
 };
 
