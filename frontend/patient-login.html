@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="patientPortalTitle">Patient Portal - Smart Clinic</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .patient-login-page {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #10b981, #06b6d4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .login-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            background: #f1f5f9;
+            border-radius: 12px;
+            padding: 4px;
+        }
+        .login-tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #64748b;
+            transition: all 0.3s;
+            border: none;
+            background: transparent;
+        }
+        .login-tab.active {
+            background: white;
+            color: #10b981;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .patient-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #10b981, #06b6d4);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+    </style>
+<base target="_blank">
+<base target="_blank">
+</head>
+<body class="patient-login-page">
+
+<div class="login-card" style="width: 420px;">
+    <div class="text-center">
+        <span class="patient-badge"><i class="fa-solid fa-user"></i> <span data-i18n="patientPortal">Patient Portal</span></span>
+    </div>
+
+    <div class="login-tabs">
+        <button class="login-tab active" onclick="showTab('login')" id="tabLogin" data-i18n="login">Login</button>
+        <button class="login-tab" onclick="showTab('register')" id="tabRegister" data-i18n="register">Register</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div id="loginForm">
+        <h2 data-i18n="loginTitle">Smart Clinic</h2>
+        <p data-i18n="signInSubtitle">Sign in to book appointments</p>
+
+        <input type="email" id="loginEmail" class="form-control mb-3" placeholder="Email Address" data-i18n-placeholder="email">
+        <input type="password" id="loginPassword" class="form-control mb-3" placeholder="Password" data-i18n-placeholder="password">
+
+        <button class="btn btn-primary w-100" onclick="patientLogin()" style="background: linear-gradient(135deg, #10b981, #06b6d4); border: none;">
+            <i class="fa-solid fa-sign-in-alt"></i> <span data-i18n="login">Login</span>
+        </button>
+
+        <div class="mt-3 text-center">
+            <a href="login.html" class="text-muted" style="font-size: 13px;">
+                <i class="fa-solid fa-user-shield"></i> <span data-i18n="staffLogin">Staff Login</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div id="registerForm" style="display:none;">
+        <h2 data-i18n="createAccount">Create Account</h2>
+        <p data-i18n="registerSubtitle">Register as a new patient</p>
+
+        <input type="text" id="regFullName" class="form-control mb-2" placeholder="Full Name" data-i18n-placeholder="fullName">
+        <input type="email" id="regEmail" class="form-control mb-2" placeholder="Email Address" data-i18n-placeholder="email">
+        <input type="password" id="regPassword" class="form-control mb-2" placeholder="Password (min 6 chars)" data-i18n-placeholder="newPassword">
+        <input type="text" id="regPhone" class="form-control mb-2" placeholder="Phone Number" data-i18n-placeholder="phone">
+        <select id="regGender" class="form-control mb-2">
+            <option value="" data-i18n="selectGender">Select Gender</option>
+            <option value="Male" data-i18n="male">Male</option>
+            <option value="Female" data-i18n="female">Female</option>
+        </select>
+        <input type="date" id="regBirthDate" class="form-control mb-2" placeholder="Birth Date" data-i18n-placeholder="birthDate">
+        <input type="text" id="regAddress" class="form-control mb-3" placeholder="Address (optional)" data-i18n-placeholder="addressOptional">
+
+        <button class="btn btn-success w-100" onclick="patientRegister()" style="background: linear-gradient(135deg, #10b981, #06b6d4); border: none;">
+            <i class="fa-solid fa-user-plus"></i> <span data-i18n="createAccountBtn">Create Account</span>
+        </button>
+    </div>
+
+    <p id="message" class="mt-3 text-danger text-center"></p>
+</div>
+
+<script src="js/i18n.js"></script>
+<script>
+    const API_URL = "http://localhost:4000/patient-portal";
+
+    function showTab(tab) {
+        document.getElementById("loginForm").style.display = tab === "login" ? "block" : "none";
+        document.getElementById("registerForm").style.display = tab === "register" ? "block" : "none";
+        document.getElementById("tabLogin").classList.toggle("active", tab === "login");
+        document.getElementById("tabRegister").classList.toggle("active", tab === "register");
+        document.getElementById("message").innerText = "";
+    }
+
+    async function patientLogin() {
+        const email = document.getElementById("loginEmail").value;
+        const password = document.getElementById("loginPassword").value;
+
+        if (!email || !password) {
+            document.getElementById("message").innerText = "Please enter email and password";
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                localStorage.setItem("patientToken", data.token);
+                localStorage.setItem("patientName", data.fullName);
+                localStorage.setItem("patientId", data.patientId);
+                window.location.href = "patient-dashboard.html";
+            } else {
+                document.getElementById("message").innerText = data.message;
+            }
+        } catch (error) {
+            document.getElementById("message").innerText = "Connection error. Please try again.";
+        }
+    }
+
+    async function patientRegister() {
+        const patient = {
+            fullName: document.getElementById("regFullName").value,
+            email: document.getElementById("regEmail").value,
+            password: document.getElementById("regPassword").value,
+            phone: document.getElementById("regPhone").value,
+            gender: document.getElementById("regGender").value,
+            birthDate: document.getElementById("regBirthDate").value,
+            address: document.getElementById("regAddress").value
+        };
+
+        if (!patient.fullName || !patient.email || !patient.password || !patient.phone) {
+            document.getElementById("message").innerText = "Please fill all required fields";
+            return;
+        }
+
+        if (patient.password.length < 6) {
+            document.getElementById("message").innerText = "Password must be at least 6 characters";
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/register`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(patient)
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert("Account created successfully! Please login.");
+                showTab("login");
+                document.getElementById("loginEmail").value = patient.email;
+            } else {
+                document.getElementById("message").innerText = data.message;
+            }
+        } catch (error) {
+            document.getElementById("message").innerText = "Connection error. Please try again.";
+        }
+    }
+
+    // Login on Enter key
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            if (document.getElementById("loginForm").style.display !== "none") {
+                patientLogin();
+            } else {
+                patientRegister();
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
