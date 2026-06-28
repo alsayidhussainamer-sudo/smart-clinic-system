@@ -12,4 +12,5 @@ router.get("/:id", authMiddleware, patientController.getPatientById);
 router.put("/:id", authMiddleware, patientController.updatePatient);
 router.delete("/:id", authMiddleware, patientController.deletePatient);
 
+
 module.exports = router;
