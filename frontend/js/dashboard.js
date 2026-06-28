@@ -1,8 +1,51 @@
 // =========================
+// DATE/TIME FORMATTING HELPERS (Timezone-safe)
+// =========================
+
+function formatTime(timeStr) {
+    if (!timeStr) return 'N/A';
+    const parts = timeStr.split(':');
+    if (parts.length < 2) return timeStr;
+    let hours = parseInt(parts[0], 10);
+    const minutes = parts[1];
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    return hours + ':' + minutes + ' ' + ampm;
+}
+
+function formatDate(dateStr) {
+    if (!dateStr) return 'N/A';
+
+    // If it's already just a date (YYYY-MM-DD), return as-is
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+        return dateStr;
+    }
+
+    // Extract YYYY-MM-DD from datetime string
+    const match = dateStr.match(/^(\d{4}-\d{2}-\d{2})/);
+    return match ? match[1] : dateStr;
+}
+
+function formatDateLong(dateStr) {
+    const datePart = formatDate(dateStr);
+    if (datePart === 'N/A') return 'N/A';
+    const parts = datePart.split('-');
+    const monthNames = ['January','February','March','April','May','June',
+        'July','August','September','October','November','December'];
+    return monthNames[parseInt(parts[1]) - 1] + ' ' + parseInt(parts[2]) + ', ' + parts[0];
+}
+
+// =========================
 // LANGUAGE SUPPORT (Added for i18n)
 // =========================
 
 function t(key) {
+    // Fallback if I18n is not loaded yet
+    if (typeof I18n === 'undefined' || !I18n.get) {
+        console.warn(`I18n not ready, returning key: ${key}`);
+        return key;
+    }
     return I18n.get(key);
 }
 
@@ -234,7 +277,7 @@ async function loadDashboard() {
             <tr>
                 <td>${appointment.PatientName}</td>
                 <td>${appointment.DoctorName}</td>
-                <td>${new Date(appointment.AppointmentDate).toLocaleString()}</td>
+                <td>${formatDate(appointment.AppointmentDate)} ${formatTime(appointment.AppointmentTime)}</td>
                 <td><span class="status-badge status-${statusClass}">${statusText}</span></td>
             </tr>
         `;
@@ -430,15 +473,20 @@ function renderAppointmentsTable(appointments) {
     appointments.forEach(appointment => {
         const statusClass = appointment.Status.toLowerCase();
         const statusText = t(statusClass) || appointment.Status;
+
+        // Show cancellation reason tooltip if cancelled
+        let cancelInfo = "";
+        if (appointment.Status === "Cancelled" && appointment.CancellationReason) {
+            cancelInfo = ` title="❌ Cancelled: ${appointment.CancellationReason.replace(/"/g, '&quot;')}"`;
+        }
+
         tableBody.innerHTML += `
-            <tr>
+            <tr${cancelInfo}>
                 <td>${appointment.AppointmentId}</td>
                 <td>${appointment.PatientName || appointment.PatientId}</td>
                 <td>${appointment.DoctorName || appointment.DoctorId}</td>
-                <td>${appointment.AppointmentDate.split("T")[0]}</td>
-                <td>${new Date('1970-01-01T' + appointment.AppointmentTime).toLocaleTimeString([], {
-                    hour: '2-digit', minute: '2-digit', hour12: true
-                })}</td>
+                <td>${formatDate(appointment.AppointmentDate)}</td>
+                <td>${formatTime(appointment.AppointmentTime)}</td>
                 <td><span class="status-badge status-${statusClass}">${statusText}</span></td>
                 <td>
                     <button class="btn btn-warning btn-sm" onclick="editAppointment(${appointment.AppointmentId})">
@@ -1387,7 +1435,7 @@ async function loadAppointmentsReport() {
                 <td>${appointment.AppointmentId}</td>
                 <td>${appointment.PatientName}</td>
                 <td>${appointment.DoctorName}</td>
-                <td>${appointment.AppointmentDate.split("T")[0]}</td>
+                <td>${formatDate(appointment.AppointmentDate)}</td>
                 <td>${appointment.AppointmentTime}</td>
                 <td><span class="status-badge status-${statusClass}">${statusText}</span></td>
             </tr>
@@ -1420,7 +1468,7 @@ async function filterAppointments() {
                 <td>${appointment.AppointmentId}</td>
                 <td>${appointment.PatientName}</td>
                 <td>${appointment.DoctorName}</td>
-                <td>${appointment.AppointmentDate.split("T")[0]}</td>
+                <td>${formatDate(appointment.AppointmentDate)}</td>
                 <td>${appointment.AppointmentTime}</td>
                 <td><span class="status-badge status-${statusClass}">${statusText}</span></td>
             </tr>
@@ -2010,5 +2058,16 @@ async function printPrescriptionPDF(prescriptionId) {
 // INITIALIZATION
 // =========================
 
-loadDashboard();
-applyRolePermissions();
+// Wait for I18n to be ready before loading dashboard
+function initDashboard() {
+    if (typeof I18n !== 'undefined' && I18n.currentLang) {
+        console.log('I18n ready, loading dashboard...');
+        loadDashboard();
+        applyRolePermissions();
+    } else {
+        console.log('Waiting for I18n to load...');
+        setTimeout(initDashboard, 100);
+    }
+}
+
+initDashboard();
