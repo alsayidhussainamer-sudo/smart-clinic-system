@@ -163,7 +163,7 @@
 <img src="screenshots/20. My Prescriptions.jpg" width="100%" alt="My Prescriptions">
 <br><br>
 <h3>🧑‍⚕️ ملفي الشخصي</h3>
-<img src="screenshots/21. My profile.jpg" width="100%" alt="My Profile">
+<img src="screenshots/21. My Profile.jpg" width="100%" alt="My Profile">
 <hr>
 </div>
 <h2>🆕 الميزات الجديدة</h2>
