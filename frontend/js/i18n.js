@@ -114,6 +114,7 @@ const translations = {
 
         // AI Consultations
         aiConsultations: "AI Consultations",
+        general: "General",
         print: "Print",
         printPDF: "Print PDF",
         searchDoctors: "Search doctors...",
@@ -122,7 +123,54 @@ const translations = {
         searchRecords: "Search records...",
         searchPrescriptions: "Search prescriptions...",
         searchUsers: "Search users...",
-        searchConsultations: "Search consultations..."
+        searchConsultations: "Search consultations...",
+        // Patient Login
+        patientPortalTitle: "Patient Portal - Smart Clinic",
+        patientPortal: "Patient Portal",
+        signInSubtitle: "Sign in to book appointments",
+        register: "Register",
+        createAccount: "Create Account",
+        registerSubtitle: "Register as a new patient",
+        createAccountBtn: "Create Account",
+        staffLogin: "Staff Login",
+        selectGender: "Select Gender",
+        addressOptional: "Address (optional)",
+        // Patient Portal
+        patientDashboard: "Patient Dashboard",
+        upcomingAppointments: "Upcoming Appointments",
+        bookAppointment: "Book Appointment",
+        viewAppointments: "View Appointments",
+        myAppointments: "My Appointments",
+        myMedicalRecords: "My Medical Records",
+        myPrescriptions: "My Prescriptions",
+        myProfile: "My Profile",
+        bookNewAppointment: "Book New Appointment",
+        selectDoctor: "Select Doctor",
+        appointmentDate: "Appointment Date",
+        appointmentTime: "Appointment Time",
+        confirmBooking: "Confirm Booking",
+        reschedule: "Reschedule",
+        cancel: "Cancel",
+        loadingAppointments: "Loading your appointments...",
+        noAppointments: "No appointments found",
+        noAppointmentsYet: "No appointments yet. Book your first appointment!",
+        bookNow: "Book Now",
+        loadingRecords: "Loading your records...",
+        noRecords: "No medical records found",
+        loadingPrescriptions: "Loading your prescriptions...",
+        noPrescriptions: "No prescriptions found",
+        loadingProfile: "Loading profile...",
+        saveChanges: "Save Changes",
+        changePassword: "Change Password",
+        changePasswordBtn: "Change Password",
+        currentPassword: "Current Password",
+        newPassword: "New Password (min 6 chars)",
+        emailCannotChange: "Email cannot be changed",
+        chatbotPlaceholder: "Ask about your appointments, records...",
+        loading: "Loading...",
+        darkMode: "Dark Mode",
+        highContrast: "High Contrast",
+        defaultTheme: "Default Theme",
     },
 
     ar: {
@@ -236,6 +284,7 @@ const translations = {
 
         // AI Consultations
         aiConsultations: "استشارات الذكاء الاصطناعي",
+        general: "عام",
         print: "طباعة",
         printPDF: "طباعة PDF",
         searchDoctors: "البحث في الأطباء...",
@@ -244,7 +293,54 @@ const translations = {
         searchRecords: "البحث في السجلات...",
         searchPrescriptions: "البحث في الوصفات...",
         searchUsers: "البحث في المستخدمين...",
-        searchConsultations: "البحث في الاستشارات..."
+        searchConsultations: "البحث في الاستشارات...",
+        // Patient Login
+        patientPortalTitle: "بوابة المريض - العيادة الذكية",
+        patientPortal: "بوابة المريض",
+        signInSubtitle: "سجل الدخول لحجز مواعيد",
+        register: "تسجيل",
+        createAccount: "إنشاء حساب",
+        registerSubtitle: "سجل كمريض جديد",
+        createAccountBtn: "إنشاء حساب",
+        staffLogin: "دخول الموظفين",
+        selectGender: "اختر الجنس",
+        addressOptional: "العنوان (اختياري)",
+        // Patient Portal
+        patientDashboard: "لوحة تحكم المريض",
+        upcomingAppointments: "المواعيد القادمة",
+        bookAppointment: "حجز موعد",
+        viewAppointments: "عرض المواعيد",
+        myAppointments: "مواعيدي",
+        myMedicalRecords: "سجلاتي الطبية",
+        myPrescriptions: "وصفاتي الطبية",
+        myProfile: "ملفي الشخصي",
+        bookNewAppointment: "حجز موعد جديد",
+        selectDoctor: "اختر الطبيب",
+        appointmentDate: "تاريخ الموعد",
+        appointmentTime: "وقت الموعد",
+        confirmBooking: "تأكيد الحجز",
+        reschedule: "إعادة الجدولة",
+        cancel: "إلغاء",
+        loadingAppointments: "جاري تحميل مواعيدك...",
+        noAppointments: "لم يتم العثور على مواعيد",
+        noAppointmentsYet: "لا توجد مواعيد بعد. احجز موعدك الأول!",
+        bookNow: "احجز الآن",
+        loadingRecords: "جاري تحميل سجلاتك...",
+        noRecords: "لم يتم العثور على سجلات طبية",
+        loadingPrescriptions: "جاري تحميل وصفاتك...",
+        noPrescriptions: "لم يتم العثور على وصفات",
+        loadingProfile: "جاري تحميل الملف...",
+        saveChanges: "حفظ التغييرات",
+        changePassword: "تغيير كلمة المرور",
+        changePasswordBtn: "تغيير كلمة المرور",
+        currentPassword: "كلمة المرور الحالية",
+        newPassword: "كلمة المرور الجديدة (6 أحرف على الأقل)",
+        emailCannotChange: "لا يمكن تغيير البريد الإلكتروني",
+        chatbotPlaceholder: "اسأل عن مواعيدك، سجلاتك...",
+        loading: "جاري التحميل...",
+        darkMode: "الوضع الداكن",
+        highContrast: "تباين عالي",
+        defaultTheme: "الوضع الافتراضي",
     }
 };
 
@@ -253,15 +349,32 @@ const translations = {
 // =========================
 
 const I18n = {
-    currentLang: localStorage.getItem('lang') || 'en',
+    // Determine which portal we're in based on URL
+    getStorageKey() {
+        const path = window.location.pathname.toLowerCase();
+        const isPatientPortal = path.includes('patient');
+        return isPatientPortal ? 'patientLang' : 'staffLang';
+    },
+
+    currentLang: (function() {
+        const path = window.location.pathname.toLowerCase();
+        const key = path.includes('patient') ? 'patientLang' : 'staffLang';
+        return localStorage.getItem(key) || 'en';
+    })(),
 
     init() {
+        // Re-read language from the correct storage key
+        const key = this.getStorageKey();
+        const saved = localStorage.getItem(key);
+        if (saved) {
+            this.currentLang = saved;
+        }
         this.applyLanguage();
     },
 
     toggle() {
         this.currentLang = this.currentLang === 'en' ? 'ar' : 'en';
-        localStorage.setItem('lang', this.currentLang);
+        localStorage.setItem(this.getStorageKey(), this.currentLang);
         this.applyLanguage();
         location.reload();
     },
@@ -282,9 +395,27 @@ const I18n = {
             const key = el.getAttribute('data-i18n');
             if (t[key]) {
                 if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                    el.placeholder = t[key];
+                    if (el.type === 'password' || el.type === 'email' || el.type === 'text') {
+                        el.placeholder = t[key];
+                    } else {
+                        el.value = t[key];
+                    }
                 } else {
-                    el.textContent = t[key];
+                    // Preserve child icons while updating text
+                    const icon = el.querySelector('i');
+                    const span = el.querySelector('span');
+                    if (icon && span) {
+                        span.textContent = ' ' + t[key];
+                    } else if (icon) {
+                        const textNode = Array.from(el.childNodes).find(n => n.nodeType === 3 && n.textContent.trim());
+                        if (textNode) {
+                            textNode.textContent = ' ' + t[key];
+                        } else {
+                            el.appendChild(document.createTextNode(' ' + t[key]));
+                        }
+                    } else {
+                        el.textContent = t[key];
+                    }
                 }
             }
         });
@@ -301,6 +432,14 @@ const I18n = {
                 } else {
                     el.textContent = t[key];
                 }
+            }
+        });
+
+        // Apply to elements with data-i18n-placeholder (for placeholders)
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            const key = el.getAttribute('data-i18n-placeholder');
+            if (t[key]) {
+                el.placeholder = t[key];
             }
         });
     }
