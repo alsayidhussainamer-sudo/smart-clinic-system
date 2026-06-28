@@ -6,6 +6,7 @@ const doctorController = require("../controllers/doctorController");
 
 const authMiddleware = require("../middleware/authMiddleware");
 
+
 router.get("/", authMiddleware, doctorController.getDoctors);
 
 router.post("/", authMiddleware, doctorController.addDoctor);
