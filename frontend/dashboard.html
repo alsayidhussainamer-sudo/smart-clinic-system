@@ -515,6 +515,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <base target="_blank">
 <base target="_blank">
+<base target="_blank">
 </head>
 
 <body>
@@ -1220,7 +1221,7 @@
 // THEME MANAGER
 // =========================
 const ThemeManager = {
-    currentTheme: localStorage.getItem('theme') || 'default',
+    currentTheme: localStorage.getItem('staffTheme') || 'default',
 
     init() {
         this.applyTheme(this.currentTheme);
@@ -1233,7 +1234,7 @@ const ThemeManager = {
         const nextIndex = (currentIndex + 1) % themes.length;
         this.currentTheme = themes[nextIndex];
 
-        localStorage.setItem('theme', this.currentTheme);
+        localStorage.setItem('staffTheme', this.currentTheme);
         this.applyTheme(this.currentTheme);
         this.updateLabel();
     },
