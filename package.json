@@ -1,10 +1,10 @@
 {
   "name": "smart-clinic-system",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Smart Clinic System Graduation Project",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
@@ -14,7 +14,7 @@
     "@google/generative-ai": "^0.24.1",
     "axios": "^1.16.1",
     "bcryptjs": "^3.0.3",
-    "cors": "^2.8.6",
+    "cors": "^2.8.5",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "groq-sdk": "^1.2.0",
