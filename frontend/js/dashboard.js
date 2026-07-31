@@ -239,8 +239,7 @@ async function loadDashboard() {
 
     const appointmentsResponse = await secureFetch("/appointments");
     if (!appointmentsResponse) return;
-    const appointmentsData = await appointmentsResponse.json();
-    const appointments = Array.isArray(appointmentsData) ? appointmentsData : [];
+    const appointments = await appointmentsResponse.json();
     document.getElementById("appointmentsCount").innerText = appointments.length;
 
     const recordsResponse = await secureFetch("/medical-records");
@@ -272,13 +271,14 @@ async function loadDashboard() {
     });
 
     sortedAppointments.slice(0, 5).forEach(appointment => {
-        const statusClass = appointment.Status.toLowerCase();
-        const statusText = t(statusClass) || appointment.Status;
+        const apptStatus = (appointment.Status || appointment.status || '') || appointment.status || '';
+        const statusClass = apptStatus.toLowerCase();
+        const statusText = t(statusClass) || apptStatus;
         recentTable.innerHTML += `
             <tr>
-                <td>${appointment.PatientName}</td>
-                <td>${appointment.DoctorName}</td>
-                <td>${formatDate(appointment.AppointmentDate)} ${formatTime(appointment.AppointmentTime)}</td>
+                <td>${((appointment.PatientName || appointment.patientname) || appointment.patientname)}</td>
+                <td>${((appointment.DoctorName || appointment.doctorname) || appointment.doctorname)}</td>
+                <td>${formatDate(((appointment.AppointmentDate || appointment.appointmentdate) || appointment.appointmentdate) || appointment.appointmentdate)} ${formatTime(((appointment.AppointmentTime || appointment.appointmenttime) || appointment.appointmenttime) || appointment.appointmenttime)}</td>
                 <td><span class="status-badge status-${statusClass}">${statusText}</span></td>
             </tr>
         `;
@@ -346,9 +346,9 @@ function searchDoctors(query) {
 
 function searchAppointments(query) {
     const filtered = allAppointments.filter(appointment =>
-        (appointment.PatientName && appointment.PatientName.toLowerCase().includes(query.toLowerCase())) ||
-        (appointment.DoctorName && appointment.DoctorName.toLowerCase().includes(query.toLowerCase())) ||
-        appointment.Status.toLowerCase().includes(query.toLowerCase())
+        (((appointment.PatientName || appointment.patientname) || appointment.patientname) && ((appointment.PatientName || appointment.patientname) || appointment.patientname).toLowerCase().includes(query.toLowerCase())) ||
+        (((appointment.DoctorName || appointment.doctorname) || appointment.doctorname) && ((appointment.DoctorName || appointment.doctorname) || appointment.doctorname).toLowerCase().includes(query.toLowerCase())) ||
+        (appointment.Status || appointment.status || '').toLowerCase().includes(query.toLowerCase())
     );
     renderAppointmentsTable(filtered);
 }
@@ -472,28 +472,29 @@ function renderAppointmentsTable(appointments) {
     }
 
     appointments.forEach(appointment => {
-        const statusClass = appointment.Status.toLowerCase();
-        const statusText = t(statusClass) || appointment.Status;
+        const apptStatus = (appointment.Status || appointment.status || '') || appointment.status || '';
+        const statusClass = apptStatus.toLowerCase();
+        const statusText = t(statusClass) || apptStatus;
 
         // Show cancellation reason tooltip if cancelled
         let cancelInfo = "";
-        if (appointment.Status === "Cancelled" && appointment.CancellationReason) {
-            cancelInfo = ` title="❌ Cancelled: ${appointment.CancellationReason.replace(/"/g, '&quot;')}"`;
+        if ((appointment.Status || appointment.status || '') === "Cancelled" && (appointment.CancellationReason || appointment.cancellationreason)) {
+            cancelInfo = ` title="❌ Cancelled: ${(appointment.CancellationReason || appointment.cancellationreason).replace(/"/g, '&quot;')}"`;
         }
 
         tableBody.innerHTML += `
             <tr${cancelInfo}>
-                <td>${appointment.AppointmentId}</td>
-                <td>${appointment.PatientName || appointment.PatientId}</td>
-                <td>${appointment.DoctorName || appointment.DoctorId}</td>
-                <td>${formatDate(appointment.AppointmentDate)}</td>
-                <td>${formatTime(appointment.AppointmentTime)}</td>
+                <td>${((appointment.AppointmentId || appointment.appointmentid) || appointment.appointmentid)}</td>
+                <td>${((appointment.PatientName || appointment.patientname) || appointment.patientname) || (appointment.PatientId || appointment.patientid)}</td>
+                <td>${((appointment.DoctorName || appointment.doctorname) || appointment.doctorname) || (appointment.DoctorId || appointment.doctorid)}</td>
+                <td>${formatDate(((appointment.AppointmentDate || appointment.appointmentdate) || appointment.appointmentdate))}</td>
+                <td>${formatTime(((appointment.AppointmentTime || appointment.appointmenttime) || appointment.appointmenttime))}</td>
                 <td><span class="status-badge status-${statusClass}">${statusText}</span></td>
                 <td>
-                    <button class="btn btn-warning btn-sm" onclick="editAppointment(${appointment.AppointmentId})">
+                    <button class="btn btn-warning btn-sm" onclick="editAppointment(${((appointment.AppointmentId || appointment.appointmentid) || appointment.appointmentid)})">
                         <i class="fa-solid fa-pen"></i> ${t("edit")}
                     </button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteAppointment(${appointment.AppointmentId})">
+                    <button class="btn btn-danger btn-sm" onclick="deleteAppointment(${((appointment.AppointmentId || appointment.appointmentid) || appointment.appointmentid)})">
                         <i class="fa-solid fa-trash"></i> ${t("delete")}
                     </button>
                 </td>
@@ -896,11 +897,7 @@ async function loadAppointments() {
     const response = await secureFetch("/appointments");
     if (!response) return;
 
-    const data = await response.json();
-    allAppointments = Array.isArray(data) ? data : [];
-    if (!Array.isArray(data)) {
-        console.error("Appointments API returned non-array:", data);
-    }
+    allAppointments = await response.json();
     renderAppointmentsTable(allAppointments);
 }
 
@@ -1022,15 +1019,15 @@ async function editAppointment(id) {
     window.currentAppointmentId = id;
     await openAppointmentModal();
 
-    document.getElementById("appointmentPatientId").value = appointment.PatientId;
-    document.getElementById("appointmentDoctorId").value = appointment.DoctorId;
+    document.getElementById("appointmentPatientId").value = (appointment.PatientId || appointment.patientid);
+    document.getElementById("appointmentDoctorId").value = (appointment.DoctorId || appointment.doctorid);
 
-    const dateValue = appointment.AppointmentDate || appointment.appointmentDate;
-    const timeValue = appointment.AppointmentTime || appointment.appointmentTime;
+    const dateValue = ((appointment.AppointmentDate || appointment.appointmentdate) || appointment.appointmentdate) || appointment.appointmentDate;
+    const timeValue = ((appointment.AppointmentTime || appointment.appointmenttime) || appointment.appointmenttime) || appointment.appointmentTime;
 
     document.getElementById("appointmentDate").value = dateValue ? dateValue.split("T")[0] : "";
     document.getElementById("appointmentTime").value = timeValue ? timeValue.slice(0, 5) : "";
-    document.getElementById("appointmentStatus").value = appointment.Status;
+    document.getElementById("appointmentStatus").value = (appointment.Status || appointment.status || '');
 }
 
 // =========================
@@ -1433,15 +1430,16 @@ async function loadAppointmentsReport() {
     tableBody.innerHTML = "";
 
     appointments.forEach(appointment => {
-        const statusClass = appointment.Status.toLowerCase();
-        const statusText = t(statusClass) || appointment.Status;
+        const apptStatus = (appointment.Status || appointment.status || '') || appointment.status || '';
+        const statusClass = apptStatus.toLowerCase();
+        const statusText = t(statusClass) || apptStatus;
         tableBody.innerHTML += `
             <tr>
-                <td>${appointment.AppointmentId}</td>
-                <td>${appointment.PatientName}</td>
-                <td>${appointment.DoctorName}</td>
-                <td>${formatDate(appointment.AppointmentDate)}</td>
-                <td>${appointment.AppointmentTime}</td>
+                <td>${((appointment.AppointmentId || appointment.appointmentid) || appointment.appointmentid)}</td>
+                <td>${((appointment.PatientName || appointment.patientname) || appointment.patientname)}</td>
+                <td>${((appointment.DoctorName || appointment.doctorname) || appointment.doctorname)}</td>
+                <td>${formatDate(((appointment.AppointmentDate || appointment.appointmentdate) || appointment.appointmentdate))}</td>
+                <td>${((appointment.AppointmentTime || appointment.appointmenttime) || appointment.appointmenttime)}</td>
                 <td><span class="status-badge status-${statusClass}">${statusText}</span></td>
             </tr>
         `;
@@ -1466,15 +1464,16 @@ async function filterAppointments() {
     tableBody.innerHTML = "";
 
     appointments.forEach(appointment => {
-        const statusClass = appointment.Status.toLowerCase();
-        const statusText = t(statusClass) || appointment.Status;
+        const apptStatus = (appointment.Status || appointment.status || '') || appointment.status || '';
+        const statusClass = apptStatus.toLowerCase();
+        const statusText = t(statusClass) || apptStatus;
         tableBody.innerHTML += `
             <tr>
-                <td>${appointment.AppointmentId}</td>
-                <td>${appointment.PatientName}</td>
-                <td>${appointment.DoctorName}</td>
-                <td>${formatDate(appointment.AppointmentDate)}</td>
-                <td>${appointment.AppointmentTime}</td>
+                <td>${((appointment.AppointmentId || appointment.appointmentid) || appointment.appointmentid)}</td>
+                <td>${((appointment.PatientName || appointment.patientname) || appointment.patientname)}</td>
+                <td>${((appointment.DoctorName || appointment.doctorname) || appointment.doctorname)}</td>
+                <td>${formatDate(((appointment.AppointmentDate || appointment.appointmentdate) || appointment.appointmentdate))}</td>
+                <td>${((appointment.AppointmentTime || appointment.appointmenttime) || appointment.appointmenttime)}</td>
                 <td><span class="status-badge status-${statusClass}">${statusText}</span></td>
             </tr>
         `;
