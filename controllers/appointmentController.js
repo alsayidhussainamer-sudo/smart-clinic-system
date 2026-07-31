@@ -3,17 +3,17 @@ const db = require("../database/db");
 exports.getAppointments = (req, res) => {
     const sql = `
     SELECT 
-        Appointments.AppointmentId,
-        Appointments.PatientId,
-        Appointments.DoctorId,
-        Patients.FullName AS PatientName,
-        Doctors.FullName AS DoctorName,
-        Appointments.AppointmentDate,
-        Appointments.AppointmentTime,
-        Appointments.Status
-    FROM Appointments
-    JOIN Patients ON Appointments.PatientId = Patients.PatientId
-    JOIN Doctors ON Appointments.DoctorId = Doctors.DoctorId
+        appointments.appointmentid,
+        appointments.patientid,
+        appointments.doctorid,
+        patients.fullname AS PatientName,
+        doctors.fullname AS DoctorName,
+        appointments.appointmentdate,
+        appointments.appointmenttime,
+        appointments.status
+    FROM appointments
+    JOIN patients ON appointments.patientid = patients.patientid
+    JOIN doctors ON appointments.doctorid = doctors.doctorid
 `;
 
     db.query(sql, (err, result) => {
@@ -36,8 +36,8 @@ exports.addAppointment = (req, res) => {
     } = req.body;
 
     const sql = `
-        INSERT INTO Appointments
-        (PatientId, DoctorId, AppointmentDate, AppointmentTime, Status)
+        INSERT INTO appointments
+        (patientid, doctorid, appointmentdate, appointmenttime, status)
         VALUES (?, ?, ?, ?, ?)
     `;
 
@@ -62,7 +62,7 @@ exports.deleteAppointment = async (req, res) => {
         const { id } = req.params;
 
         db.query(
-            "DELETE FROM appointments WHERE AppointmentId = ?",
+            "DELETE FROM appointments WHERE appointmentid = ?",
             [id],
             (err, result) => {
 
@@ -103,8 +103,8 @@ exports.updateAppointment = (req, res) => {
 
     const sql = `
         UPDATE appointments
-        SET PatientId = ?, DoctorId = ?, AppointmentDate = ?, AppointmentTime = ?, Status = ?
-        WHERE AppointmentId = ?
+        SET patientid = ?, doctorid = ?, appointmentdate = ?, appointmenttime = ?, status = ?
+        WHERE appointmentid = ?
     `;
 
     db.query(sql, [

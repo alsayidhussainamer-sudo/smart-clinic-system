@@ -239,7 +239,8 @@ async function loadDashboard() {
 
     const appointmentsResponse = await secureFetch("/appointments");
     if (!appointmentsResponse) return;
-    const appointments = await appointmentsResponse.json();
+    const appointmentsData = await appointmentsResponse.json();
+    const appointments = Array.isArray(appointmentsData) ? appointmentsData : [];
     document.getElementById("appointmentsCount").innerText = appointments.length;
 
     const recordsResponse = await secureFetch("/medical-records");
@@ -895,7 +896,11 @@ async function loadAppointments() {
     const response = await secureFetch("/appointments");
     if (!response) return;
 
-    allAppointments = await response.json();
+    const data = await response.json();
+    allAppointments = Array.isArray(data) ? data : [];
+    if (!Array.isArray(data)) {
+        console.error("Appointments API returned non-array:", data);
+    }
     renderAppointmentsTable(allAppointments);
 }
 
