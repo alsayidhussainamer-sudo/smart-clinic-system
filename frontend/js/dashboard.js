@@ -271,14 +271,13 @@ async function loadDashboard() {
     });
 
     sortedAppointments.slice(0, 5).forEach(appointment => {
-        const apptStatus = (appointment.Status || appointment.status || '') || appointment.status || '';
-        const statusClass = apptStatus.toLowerCase();
-        const statusText = t(statusClass) || apptStatus;
+        const statusClass = appointment.Status.toLowerCase();
+        const statusText = t(statusClass) || appointment.Status;
         recentTable.innerHTML += `
             <tr>
-                <td>${((appointment.PatientName || appointment.patientname) || appointment.patientname)}</td>
-                <td>${((appointment.DoctorName || appointment.doctorname) || appointment.doctorname)}</td>
-                <td>${formatDate(((appointment.AppointmentDate || appointment.appointmentdate) || appointment.appointmentdate) || appointment.appointmentdate)} ${formatTime(((appointment.AppointmentTime || appointment.appointmenttime) || appointment.appointmenttime) || appointment.appointmenttime)}</td>
+                <td>${appointment.PatientName}</td>
+                <td>${appointment.DoctorName}</td>
+                <td>${formatDate(appointment.AppointmentDate)} ${formatTime(appointment.AppointmentTime)}</td>
                 <td><span class="status-badge status-${statusClass}">${statusText}</span></td>
             </tr>
         `;
@@ -327,39 +326,55 @@ let allAIConsultations = [];
 let allUsers = [];
 
 function searchPatients(query) {
-    const filtered = allPatients.filter(patient =>
-        patient.FullName.toLowerCase().includes(query.toLowerCase()) ||
-        patient.Phone.includes(query) ||
-        patient.Email.toLowerCase().includes(query.toLowerCase())
-    );
+    const filtered = allPatients.filter(patient => {
+        const fullName = patient.FullName || patient.fullname || '';
+        const phone = patient.Phone || patient.phone || '';
+        const email = patient.Email || patient.email || '';
+        return (
+            fullName.toLowerCase().includes(query.toLowerCase()) ||
+            phone.includes(query) ||
+            email.toLowerCase().includes(query.toLowerCase())
+        );
+    });
     renderPatientsTable(filtered);
 }
 
 function searchDoctors(query) {
-    const filtered = allDoctors.filter(doctor =>
-        doctor.FullName.toLowerCase().includes(query.toLowerCase()) ||
-        doctor.Phone.includes(query) ||
-        doctor.Email.toLowerCase().includes(query.toLowerCase())
-    );
+    const filtered = allDoctors.filter(doctor => {
+        const fullName = doctor.FullName || doctor.fullname || '';
+        const phone = doctor.Phone || doctor.phone || '';
+        const email = doctor.Email || doctor.email || '';
+        return (
+            fullName.toLowerCase().includes(query.toLowerCase()) ||
+            phone.includes(query) ||
+            email.toLowerCase().includes(query.toLowerCase())
+        );
+    });
     renderDoctorsTable(filtered);
 }
 
 function searchAppointments(query) {
     const filtered = allAppointments.filter(appointment =>
-        (((appointment.PatientName || appointment.patientname) || appointment.patientname) && ((appointment.PatientName || appointment.patientname) || appointment.patientname).toLowerCase().includes(query.toLowerCase())) ||
-        (((appointment.DoctorName || appointment.doctorname) || appointment.doctorname) && ((appointment.DoctorName || appointment.doctorname) || appointment.doctorname).toLowerCase().includes(query.toLowerCase())) ||
-        (appointment.Status || appointment.status || '').toLowerCase().includes(query.toLowerCase())
+        (appointment.PatientName && appointment.PatientName.toLowerCase().includes(query.toLowerCase())) ||
+        (appointment.DoctorName && appointment.DoctorName.toLowerCase().includes(query.toLowerCase())) ||
+        appointment.Status.toLowerCase().includes(query.toLowerCase())
     );
     renderAppointmentsTable(filtered);
 }
 
 function searchMedicalRecords(query) {
-    const filtered = allMedicalRecords.filter(record =>
-        record.PatientName.toLowerCase().includes(query.toLowerCase()) ||
-        record.DoctorName.toLowerCase().includes(query.toLowerCase()) ||
-        record.Symptoms.toLowerCase().includes(query.toLowerCase()) ||
-        record.Diagnosis.toLowerCase().includes(query.toLowerCase())
-    );
+    const filtered = allMedicalRecords.filter(record => {
+        const patientName = record.PatientName || record.patientname || '';
+        const doctorName = record.DoctorName || record.doctorname || '';
+        const symptoms = record.Symptoms || record.symptoms || '';
+        const diagnosis = record.Diagnosis || record.diagnosis || '';
+        return (
+            patientName.toLowerCase().includes(query.toLowerCase()) ||
+            doctorName.toLowerCase().includes(query.toLowerCase()) ||
+            symptoms.toLowerCase().includes(query.toLowerCase()) ||
+            diagnosis.toLowerCase().includes(query.toLowerCase())
+        );
+    });
     renderMedicalRecordsTable(filtered);
 }
 
@@ -372,20 +387,30 @@ function searchUsers(query) {
 }
 
 function searchPrescriptions(query) {
-    const filtered = allPrescriptions.filter(prescription =>
-        (prescription.PatientName && prescription.PatientName.toLowerCase().includes(query.toLowerCase())) ||
-        (prescription.DoctorName && prescription.DoctorName.toLowerCase().includes(query.toLowerCase())) ||
-        (prescription.MedicineName && prescription.MedicineName.toLowerCase().includes(query.toLowerCase()))
-    );
+    const filtered = allPrescriptions.filter(prescription => {
+        const patientName = prescription.PatientName || prescription.patientname || '';
+        const doctorName = prescription.DoctorName || prescription.doctorname || '';
+        const medicineName = prescription.MedicineName || prescription.medicinename || '';
+        return (
+            patientName.toLowerCase().includes(query.toLowerCase()) ||
+            doctorName.toLowerCase().includes(query.toLowerCase()) ||
+            medicineName.toLowerCase().includes(query.toLowerCase())
+        );
+    });
     renderPrescriptionsTable(filtered);
 }
 
 function searchAIConsultations(query) {
-    const filtered = allAIConsultations.filter(consultation =>
-        (consultation.PatientName && consultation.PatientName.toLowerCase().includes(query.toLowerCase())) ||
-        (consultation.SymptomsText && consultation.SymptomsText.toLowerCase().includes(query.toLowerCase())) ||
-        (consultation.AIResponse && consultation.AIResponse.toLowerCase().includes(query.toLowerCase()))
-    );
+    const filtered = allAIConsultations.filter(consultation => {
+        const patientName = consultation.PatientName || consultation.patientname || '';
+        const symptomsText = consultation.SymptomsText || consultation.symptomstext || '';
+        const aiResponse = consultation.AIResponse || consultation.airesponse || '';
+        return (
+            patientName.toLowerCase().includes(query.toLowerCase()) ||
+            symptomsText.toLowerCase().includes(query.toLowerCase()) ||
+            aiResponse.toLowerCase().includes(query.toLowerCase())
+        );
+    });
     renderAIConsultationsList(filtered);
 }
 
@@ -403,18 +428,24 @@ function renderPatientsTable(patients) {
     }
 
     patients.forEach(patient => {
+        const patientId = patient.PatientId || patient.patientid;
+        const fullName = patient.FullName || patient.fullname;
+        const gender = patient.Gender || patient.gender;
+        const phone = patient.Phone || patient.phone;
+        const email = patient.Email || patient.email;
+
         tableBody.innerHTML += `
             <tr>
-                <td>${patient.PatientId}</td>
-                <td>${patient.FullName}</td>
-                <td>${patient.Gender}</td>
-                <td>${patient.Phone}</td>
-                <td>${patient.Email}</td>
+                <td>${patientId}</td>
+                <td>${fullName}</td>
+                <td>${gender}</td>
+                <td>${phone}</td>
+                <td>${email}</td>
                 <td>
-                    <button class="btn btn-warning btn-sm" onclick="editPatient(${patient.PatientId})">
+                    <button class="btn btn-warning btn-sm" onclick="editPatient(${patientId})">
                         <i class="fa-solid fa-pen"></i> ${t("edit")}
                     </button>
-                    <button class="btn btn-danger btn-sm" onclick="deletePatient(${patient.PatientId})">
+                    <button class="btn btn-danger btn-sm" onclick="deletePatient(${patientId})">
                         <i class="fa-solid fa-trash"></i> ${t("delete")}
                     </button>
                 </td>
@@ -433,27 +464,34 @@ function renderDoctorsTable(doctors) {
     }
 
     doctors.forEach(doctor => {
+        const doctorId = doctor.DoctorId || doctor.doctorid;
+        const fullName = doctor.FullName || doctor.fullname;
+        const phone = doctor.Phone || doctor.phone;
+        const email = doctor.Email || doctor.email;
+        const specialtyName = doctor.SpecialtyName || doctor.specialtyname;
+        const specialtyNameAr = doctor.SpecialtyNameAr || doctor.specialtynamear;
+
         let specialtyDisplay = "N/A";
-        if (doctor.SpecialtyName && doctor.SpecialtyNameAr) {
-            specialtyDisplay = `${doctor.SpecialtyName} / ${doctor.SpecialtyNameAr}`;
-        } else if (doctor.SpecialtyName) {
-            specialtyDisplay = doctor.SpecialtyName;
-        } else if (doctor.SpecialtyNameAr) {
-            specialtyDisplay = doctor.SpecialtyNameAr;
+        if (specialtyName && specialtyNameAr) {
+            specialtyDisplay = `${specialtyName} / ${specialtyNameAr}`;
+        } else if (specialtyName) {
+            specialtyDisplay = specialtyName;
+        } else if (specialtyNameAr) {
+            specialtyDisplay = specialtyNameAr;
         }
 
         tableBody.innerHTML += `
             <tr>
-                <td>${doctor.DoctorId}</td>
-                <td>${doctor.FullName}</td>
+                <td>${doctorId}</td>
+                <td>${fullName}</td>
                 <td>${specialtyDisplay}</td>
-                <td>${doctor.Phone}</td>
-                <td>${doctor.Email}</td>
+                <td>${phone}</td>
+                <td>${email}</td>
                 <td>
-                    <button class="btn btn-warning btn-sm" onclick="editDoctor(${doctor.DoctorId})">
+                    <button class="btn btn-warning btn-sm" onclick="editDoctor(${doctorId})">
                         <i class="fa-solid fa-pen"></i> ${t("edit")}
                     </button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteDoctor(${doctor.DoctorId})">
+                    <button class="btn btn-danger btn-sm" onclick="deleteDoctor(${doctorId})">
                         <i class="fa-solid fa-trash"></i> ${t("delete")}
                     </button>
                 </td>
@@ -472,29 +510,28 @@ function renderAppointmentsTable(appointments) {
     }
 
     appointments.forEach(appointment => {
-        const apptStatus = (appointment.Status || appointment.status || '') || appointment.status || '';
-        const statusClass = apptStatus.toLowerCase();
-        const statusText = t(statusClass) || apptStatus;
+        const statusClass = appointment.Status.toLowerCase();
+        const statusText = t(statusClass) || appointment.Status;
 
         // Show cancellation reason tooltip if cancelled
         let cancelInfo = "";
-        if ((appointment.Status || appointment.status || '') === "Cancelled" && (appointment.CancellationReason || appointment.cancellationreason)) {
-            cancelInfo = ` title="❌ Cancelled: ${(appointment.CancellationReason || appointment.cancellationreason).replace(/"/g, '&quot;')}"`;
+        if (appointment.Status === "Cancelled" && appointment.CancellationReason) {
+            cancelInfo = ` title="❌ Cancelled: ${appointment.CancellationReason.replace(/"/g, '&quot;')}"`;
         }
 
         tableBody.innerHTML += `
             <tr${cancelInfo}>
-                <td>${((appointment.AppointmentId || appointment.appointmentid) || appointment.appointmentid)}</td>
-                <td>${((appointment.PatientName || appointment.patientname) || appointment.patientname) || (appointment.PatientId || appointment.patientid)}</td>
-                <td>${((appointment.DoctorName || appointment.doctorname) || appointment.doctorname) || (appointment.DoctorId || appointment.doctorid)}</td>
-                <td>${formatDate(((appointment.AppointmentDate || appointment.appointmentdate) || appointment.appointmentdate))}</td>
-                <td>${formatTime(((appointment.AppointmentTime || appointment.appointmenttime) || appointment.appointmenttime))}</td>
+                <td>${appointment.AppointmentId}</td>
+                <td>${appointment.PatientName || appointment.PatientId}</td>
+                <td>${appointment.DoctorName || appointment.DoctorId}</td>
+                <td>${formatDate(appointment.AppointmentDate)}</td>
+                <td>${formatTime(appointment.AppointmentTime)}</td>
                 <td><span class="status-badge status-${statusClass}">${statusText}</span></td>
                 <td>
-                    <button class="btn btn-warning btn-sm" onclick="editAppointment(${((appointment.AppointmentId || appointment.appointmentid) || appointment.appointmentid)})">
+                    <button class="btn btn-warning btn-sm" onclick="editAppointment(${appointment.AppointmentId})">
                         <i class="fa-solid fa-pen"></i> ${t("edit")}
                     </button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteAppointment(${((appointment.AppointmentId || appointment.appointmentid) || appointment.appointmentid)})">
+                    <button class="btn btn-danger btn-sm" onclick="deleteAppointment(${appointment.AppointmentId})">
                         <i class="fa-solid fa-trash"></i> ${t("delete")}
                     </button>
                 </td>
@@ -513,20 +550,28 @@ function renderMedicalRecordsTable(records) {
     }
 
     records.forEach(record => {
+        const recordId = record.RecordId || record.recordid;
+        const patientName = record.PatientName || record.patientname;
+        const doctorName = record.DoctorName || record.doctorname;
+        const symptoms = record.Symptoms || record.symptoms;
+        const diagnosis = record.Diagnosis || record.diagnosis;
+        const treatment = record.Treatment || record.treatment || "";
+        const visitDate = (record.VisitDate || record.visitdate || '').split("T")[0];
+
         tableBody.innerHTML += `
             <tr>
-                <td>${record.RecordId}</td>
-                <td>${record.PatientName}</td>
-                <td>${record.DoctorName}</td>
-                <td>${record.Symptoms}</td>
-                <td>${record.Diagnosis}</td>
-                <td>${record.Treatment || ""}</td>
-                <td>${record.VisitDate.split("T")[0]}</td>
+                <td>${recordId}</td>
+                <td>${patientName}</td>
+                <td>${doctorName}</td>
+                <td>${symptoms}</td>
+                <td>${diagnosis}</td>
+                <td>${treatment}</td>
+                <td>${visitDate}</td>
                 <td>
-                    <button class="btn btn-warning btn-sm me-2" onclick="editMedicalRecord(${record.RecordId})">
+                    <button class="btn btn-warning btn-sm me-2" onclick="editMedicalRecord(${recordId})">
                         <i class="fa-solid fa-pen"></i> ${t("edit")}
                     </button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteMedicalRecord(${record.RecordId})">
+                    <button class="btn btn-danger btn-sm" onclick="deleteMedicalRecord(${recordId})">
                         <i class="fa-solid fa-trash"></i> ${t("delete")}
                     </button>
                 </td>
@@ -545,16 +590,20 @@ function renderUsersTable(users) {
     }
 
     users.forEach(user => {
+        const userId = user.UserId || user.userid;
+        const username = user.Username || user.username;
+        const role = user.Role || user.role;
+
         tableBody.innerHTML += `
             <tr>
-                <td>${user.UserId}</td>
-                <td>${user.Username}</td>
-                <td><span class="status-badge status-${user.Role.toLowerCase()}">${user.Role}</span></td>
+                <td>${userId}</td>
+                <td>${username}</td>
+                <td><span class="status-badge status-${role.toLowerCase()}">${role}</span></td>
                 <td>
-                    <button class="btn btn-warning btn-sm" onclick="editUser(${user.UserId}, '${user.Username}', '${user.Role}')">
+                    <button class="btn btn-warning btn-sm" onclick="editUser(${userId}, '${username}', '${role}')">
                         <i class="fa-solid fa-pen"></i> ${t("edit")}
                     </button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteUser(${user.UserId})">
+                    <button class="btn btn-danger btn-sm" onclick="deleteUser(${userId})">
                         <i class="fa-solid fa-trash"></i> ${t("delete")}
                     </button>
                 </td>
@@ -573,23 +622,32 @@ function renderPrescriptionsTable(prescriptions) {
     }
 
     prescriptions.forEach(prescription => {
+        const prescriptionId = prescription.PrescriptionId || prescription.prescriptionid;
+        const patientName = prescription.PatientName || prescription.patientname || "N/A";
+        const doctorName = prescription.DoctorName || prescription.doctorname || "N/A";
+        const medicineName = prescription.MedicineName || prescription.medicinename;
+        const dosage = prescription.Dosage || prescription.dosage || "-";
+        const instructions = prescription.Instructions || prescription.instructions || "-";
+        const visitDate = prescription.VisitDate || prescription.visitdate;
+        const visitDateStr = visitDate ? visitDate.split("T")[0] : "-";
+
         tableBody.innerHTML += `
             <tr>
-                <td>${prescription.PrescriptionId}</td>
-                <td>${prescription.PatientName || "N/A"}</td>
-                <td>${prescription.DoctorName || "N/A"}</td>
-                <td>${prescription.MedicineName}</td>
-                <td>${prescription.Dosage || "-"}</td>
-                <td>${prescription.Instructions || "-"}</td>
-                <td>${prescription.VisitDate ? prescription.VisitDate.split("T")[0] : "-"}</td>
+                <td>${prescriptionId}</td>
+                <td>${patientName}</td>
+                <td>${doctorName}</td>
+                <td>${medicineName}</td>
+                <td>${dosage}</td>
+                <td>${instructions}</td>
+                <td>${visitDateStr}</td>
                 <td>
-                    <button class="btn btn-info btn-sm me-1" onclick="printPrescriptionPDF(${prescription.PrescriptionId})" title="${t("printPDF")}">
+                    <button class="btn btn-info btn-sm me-1" onclick="printPrescriptionPDF(${prescriptionId})" title="${t("printPDF")}">
                         <i class="fa-solid fa-file-pdf"></i>
                     </button>
-                    <button class="btn btn-warning btn-sm me-1" onclick="editPrescription(${prescription.PrescriptionId})">
+                    <button class="btn btn-warning btn-sm me-1" onclick="editPrescription(${prescriptionId})">
                         <i class="fa-solid fa-pen"></i> ${t("edit")}
                     </button>
-                    <button class="btn btn-danger btn-sm" onclick="deletePrescription(${prescription.PrescriptionId})">
+                    <button class="btn btn-danger btn-sm" onclick="deletePrescription(${prescriptionId})">
                         <i class="fa-solid fa-trash"></i> ${t("delete")}
                     </button>
                 </td>
@@ -608,24 +666,30 @@ function renderAIConsultationsList(consultations) {
     }
 
     consultations.forEach(consultation => {
-        const date = consultation.ConsultationDate ? new Date(consultation.ConsultationDate).toLocaleString() : "-";
+        const consultationId = consultation.ConsultationId || consultation.consultationid;
+        const patientName = consultation.PatientName || consultation.patientname || "Unknown Patient";
+        const symptomsText = consultation.SymptomsText || consultation.symptomstext;
+        const aiResponse = consultation.AIResponse || consultation.airesponse;
+        const consultationDate = consultation.ConsultationDate || consultation.consultationdate;
+        const date = consultationDate ? new Date(consultationDate).toLocaleString() : "-";
+
         container.innerHTML += `
             <div class="col-md-6 mb-3">
                 <div class="recent-section">
                     <div class="d-flex justify-content-between align-items-start mb-2">
-                        <h5><i class="fa-solid fa-user"></i> ${consultation.PatientName || "Unknown Patient"}</h5>
+                        <h5><i class="fa-solid fa-user"></i> ${patientName}</h5>
                         <span class="text-muted small">${date}</span>
                     </div>
                     <div class="mb-2">
                         <strong><i class="fa-solid fa-stethoscope text-primary"></i> Symptoms:</strong>
-                        <p class="mb-1">${consultation.SymptomsText}</p>
+                        <p class="mb-1">${symptomsText}</p>
                     </div>
                     <div class="mb-2">
                         <strong><i class="fa-solid fa-robot text-success"></i> AI Response:</strong>
-                        <p class="mb-0 text-muted">${consultation.AIResponse}</p>
+                        <p class="mb-0 text-muted">${aiResponse}</p>
                     </div>
                     <div class="mt-3 text-end">
-                        <button class="btn btn-danger btn-sm" onclick="deleteAIConsultation(${consultation.ConsultationId})">
+                        <button class="btn btn-danger btn-sm" onclick="deleteAIConsultation(${consultationId})">
                             <i class="fa-solid fa-trash"></i> ${t("delete")}
                         </button>
                     </div>
@@ -731,12 +795,12 @@ async function editPatient(id) {
 
     const patient = await response.json();
 
-    document.getElementById("fullName").value = patient.FullName;
-    document.getElementById("gender").value = patient.Gender;
-    document.getElementById("birthDate").value = patient.BirthDate.split("T")[0];
-    document.getElementById("phone").value = patient.Phone;
-    document.getElementById("email").value = patient.Email;
-    document.getElementById("address").value = patient.Address;
+    document.getElementById("fullName").value = patient.FullName || patient.fullname;
+    document.getElementById("gender").value = patient.Gender || patient.gender;
+    document.getElementById("birthDate").value = (patient.BirthDate || patient.birthdate || '').split("T")[0];
+    document.getElementById("phone").value = patient.Phone || patient.phone;
+    document.getElementById("email").value = patient.Email || patient.email;
+    document.getElementById("address").value = patient.Address || patient.address || '';
 
     window.currentPatientId = id;
 
@@ -853,7 +917,7 @@ async function editDoctor(id) {
     if (!response) return;
 
     const doctors = await response.json();
-    const doctor = doctors.find(d => d.DoctorId === id);
+    const doctor = doctors.find(d => (d.DoctorId || d.doctorid) == id);
 
     if (!doctor) {
         alert("Doctor not found");
@@ -861,9 +925,9 @@ async function editDoctor(id) {
     }
 
     window.currentDoctorId = id;
-    document.getElementById("doctorFullName").value = doctor.FullName;
-    document.getElementById("doctorPhone").value = doctor.Phone;
-    document.getElementById("doctorEmail").value = doctor.Email;
+    document.getElementById("doctorFullName").value = doctor.FullName || doctor.fullname;
+    document.getElementById("doctorPhone").value = doctor.Phone || doctor.phone;
+    document.getElementById("doctorEmail").value = doctor.Email || doctor.email;
 
     const specialtySelect = document.getElementById("doctorSpecialtyId");
     specialtySelect.innerHTML = `<option value="">${t("selectSpecialty")}</option>`;
@@ -883,7 +947,7 @@ async function editDoctor(id) {
         `;
     });
 
-    document.getElementById("doctorSpecialtyId").value = doctor.SpecialtyId;
+    document.getElementById("doctorSpecialtyId").value = doctor.SpecialtyId || doctor.specialtyid;
 
     const modal = new bootstrap.Modal(document.getElementById("doctorModal"));
     modal.show();
@@ -913,8 +977,10 @@ async function openAppointmentModal() {
     const patients = await patientsResponse.json();
 
     patients.forEach(patient => {
+        const patientId = patient.PatientId || patient.patientid;
+        const fullName = patient.FullName || patient.fullname;
         patientSelect.innerHTML += `
-            <option value="${patient.PatientId}">${patient.FullName}</option>
+            <option value="${patientId}">${fullName}</option>
         `;
     });
 
@@ -923,8 +989,10 @@ async function openAppointmentModal() {
     const doctors = await doctorsResponse.json();
 
     doctors.forEach(doctor => {
+        const doctorId = doctor.DoctorId || doctor.doctorid;
+        const fullName = doctor.FullName || doctor.fullname;
         doctorSelect.innerHTML += `
-            <option value="${doctor.DoctorId}">${doctor.FullName}</option>
+            <option value="${doctorId}">${fullName}</option>
         `;
     });
 
@@ -1009,7 +1077,7 @@ async function editAppointment(id) {
     if (!response) return;
 
     const appointments = await response.json();
-    const appointment = appointments.find(a => a.AppointmentId === id);
+    const appointment = appointments.find(a => (a.AppointmentId || a.appointmentid) == id);
 
     if (!appointment) {
         alert("Appointment not found");
@@ -1019,15 +1087,15 @@ async function editAppointment(id) {
     window.currentAppointmentId = id;
     await openAppointmentModal();
 
-    document.getElementById("appointmentPatientId").value = (appointment.PatientId || appointment.patientid);
-    document.getElementById("appointmentDoctorId").value = (appointment.DoctorId || appointment.doctorid);
+    document.getElementById("appointmentPatientId").value = appointment.PatientId || appointment.patientid;
+    document.getElementById("appointmentDoctorId").value = appointment.DoctorId || appointment.doctorid;
 
-    const dateValue = ((appointment.AppointmentDate || appointment.appointmentdate) || appointment.appointmentdate) || appointment.appointmentDate;
-    const timeValue = ((appointment.AppointmentTime || appointment.appointmenttime) || appointment.appointmenttime) || appointment.appointmentTime;
+    const dateValue = appointment.AppointmentDate || appointment.appointmentdate;
+    const timeValue = appointment.AppointmentTime || appointment.appointmenttime;
 
     document.getElementById("appointmentDate").value = dateValue ? dateValue.split("T")[0] : "";
     document.getElementById("appointmentTime").value = timeValue ? timeValue.slice(0, 5) : "";
-    document.getElementById("appointmentStatus").value = (appointment.Status || appointment.status || '');
+    document.getElementById("appointmentStatus").value = appointment.Status || appointment.status;
 }
 
 // =========================
@@ -1058,14 +1126,18 @@ async function openMedicalRecordModal() {
     doctorSelect.innerHTML = `<option value="">${t("doctor")}</option>`;
 
     patients.forEach(patient => {
+        const patientId = patient.PatientId || patient.patientid;
+        const fullName = patient.FullName || patient.fullname;
         patientSelect.innerHTML += `
-            <option value="${patient.PatientId}">${patient.FullName}</option>
+            <option value="${patientId}">${fullName}</option>
         `;
     });
 
     doctors.forEach(doctor => {
+        const doctorId = doctor.DoctorId || doctor.doctorid;
+        const fullName = doctor.FullName || doctor.fullname;
         doctorSelect.innerHTML += `
-            <option value="${doctor.DoctorId}">${doctor.FullName}</option>
+            <option value="${doctorId}">${fullName}</option>
         `;
     });
 
@@ -1160,12 +1232,12 @@ async function editMedicalRecord(id) {
     await openMedicalRecordModal();
 
     window.currentMedicalRecordId = id;
-    document.getElementById("recordPatientId").value = record.PatientId;
-    document.getElementById("recordDoctorId").value = record.DoctorId;
-    document.getElementById("recordSymptoms").value = record.Symptoms;
-    document.getElementById("recordDiagnosis").value = record.Diagnosis;
-    document.getElementById("recordTreatment").value = record.Treatment;
-    document.getElementById("recordVisitDate").value = record.VisitDate.split("T")[0];
+    document.getElementById("recordPatientId").value = record.PatientId || record.patientid;
+    document.getElementById("recordDoctorId").value = record.DoctorId || record.doctorid;
+    document.getElementById("recordSymptoms").value = record.Symptoms || record.symptoms;
+    document.getElementById("recordDiagnosis").value = record.Diagnosis || record.diagnosis;
+    document.getElementById("recordTreatment").value = record.Treatment || record.treatment || '';
+    document.getElementById("recordVisitDate").value = (record.VisitDate || record.visitdate || '').split("T")[0];
 }
 
 // =========================
@@ -1192,8 +1264,11 @@ async function openPrescriptionModal() {
     recordSelect.innerHTML = `<option value="">${t("selectRecord")}</option>`;
 
     records.forEach(record => {
+        const recordId = record.RecordId || record.recordid;
+        const patientName = record.PatientName || record.patientname || 'Unknown';
+        const visitDate = (record.VisitDate || record.visitdate || '').split("T")[0];
         recordSelect.innerHTML += `
-            <option value="${record.RecordId}">${record.PatientName} - ${record.VisitDate.split("T")[0]}</option>
+            <option value="${recordId}">${patientName} - ${visitDate}</option>
         `;
     });
 
@@ -1281,10 +1356,10 @@ async function editPrescription(id) {
     await openPrescriptionModal();
 
     window.currentPrescriptionId = id;
-    document.getElementById("prescriptionRecordId").value = prescription.RecordId;
-    document.getElementById("prescriptionMedicineName").value = prescription.MedicineName;
-    document.getElementById("prescriptionDosage").value = prescription.Dosage || "";
-    document.getElementById("prescriptionInstructions").value = prescription.Instructions || "";
+    document.getElementById("prescriptionRecordId").value = prescription.RecordId || prescription.recordid;
+    document.getElementById("prescriptionMedicineName").value = prescription.MedicineName || prescription.medicinename;
+    document.getElementById("prescriptionDosage").value = prescription.Dosage || prescription.dosage || "";
+    document.getElementById("prescriptionInstructions").value = prescription.Instructions || prescription.instructions || "";
 }
 
 // =========================
@@ -1430,16 +1505,15 @@ async function loadAppointmentsReport() {
     tableBody.innerHTML = "";
 
     appointments.forEach(appointment => {
-        const apptStatus = (appointment.Status || appointment.status || '') || appointment.status || '';
-        const statusClass = apptStatus.toLowerCase();
-        const statusText = t(statusClass) || apptStatus;
+        const statusClass = appointment.Status.toLowerCase();
+        const statusText = t(statusClass) || appointment.Status;
         tableBody.innerHTML += `
             <tr>
-                <td>${((appointment.AppointmentId || appointment.appointmentid) || appointment.appointmentid)}</td>
-                <td>${((appointment.PatientName || appointment.patientname) || appointment.patientname)}</td>
-                <td>${((appointment.DoctorName || appointment.doctorname) || appointment.doctorname)}</td>
-                <td>${formatDate(((appointment.AppointmentDate || appointment.appointmentdate) || appointment.appointmentdate))}</td>
-                <td>${((appointment.AppointmentTime || appointment.appointmenttime) || appointment.appointmenttime)}</td>
+                <td>${appointment.AppointmentId}</td>
+                <td>${appointment.PatientName}</td>
+                <td>${appointment.DoctorName}</td>
+                <td>${formatDate(appointment.AppointmentDate)}</td>
+                <td>${appointment.AppointmentTime}</td>
                 <td><span class="status-badge status-${statusClass}">${statusText}</span></td>
             </tr>
         `;
@@ -1464,16 +1538,15 @@ async function filterAppointments() {
     tableBody.innerHTML = "";
 
     appointments.forEach(appointment => {
-        const apptStatus = (appointment.Status || appointment.status || '') || appointment.status || '';
-        const statusClass = apptStatus.toLowerCase();
-        const statusText = t(statusClass) || apptStatus;
+        const statusClass = appointment.Status.toLowerCase();
+        const statusText = t(statusClass) || appointment.Status;
         tableBody.innerHTML += `
             <tr>
-                <td>${((appointment.AppointmentId || appointment.appointmentid) || appointment.appointmentid)}</td>
-                <td>${((appointment.PatientName || appointment.patientname) || appointment.patientname)}</td>
-                <td>${((appointment.DoctorName || appointment.doctorname) || appointment.doctorname)}</td>
-                <td>${formatDate(((appointment.AppointmentDate || appointment.appointmentdate) || appointment.appointmentdate))}</td>
-                <td>${((appointment.AppointmentTime || appointment.appointmenttime) || appointment.appointmenttime)}</td>
+                <td>${appointment.AppointmentId}</td>
+                <td>${appointment.PatientName}</td>
+                <td>${appointment.DoctorName}</td>
+                <td>${formatDate(appointment.AppointmentDate)}</td>
+                <td>${appointment.AppointmentTime}</td>
                 <td><span class="status-badge status-${statusClass}">${statusText}</span></td>
             </tr>
         `;
@@ -1491,13 +1564,19 @@ async function loadDoctorsReport() {
     tableBody.innerHTML = "";
 
     doctors.forEach(doctor => {
+        const doctorId = doctor.DoctorId || doctor.doctorid;
+        const fullName = doctor.FullName || doctor.fullname;
+        const specialtyName = doctor.SpecialtyName || doctor.specialtyname || "N/A";
+        const totalAppointments = doctor.TotalAppointments || doctor.totalappointments || 0;
+        const totalRecords = doctor.TotalRecords || doctor.totalrecords || 0;
+
         tableBody.innerHTML += `
             <tr>
-                <td>${doctor.DoctorId}</td>
-                <td>${doctor.FullName}</td>
-                <td>${doctor.SpecialtyName || "N/A"}</td>
-                <td>${doctor.TotalAppointments}</td>
-                <td>${doctor.TotalRecords}</td>
+                <td>${doctorId}</td>
+                <td>${fullName}</td>
+                <td>${specialtyName}</td>
+                <td>${totalAppointments}</td>
+                <td>${totalRecords}</td>
             </tr>
         `;
     });
@@ -1512,13 +1591,19 @@ async function loadPatientsReport() {
     tableBody.innerHTML = "";
 
     patients.forEach(patient => {
+        const patientId = patient.PatientId || patient.patientid;
+        const fullName = patient.FullName || patient.fullname;
+        const gender = patient.Gender || patient.gender;
+        const totalAppointments = patient.TotalAppointments || patient.totalappointments || 0;
+        const totalRecords = patient.TotalRecords || patient.totalrecords || 0;
+
         tableBody.innerHTML += `
             <tr>
-                <td>${patient.PatientId}</td>
-                <td>${patient.FullName}</td>
-                <td>${patient.Gender}</td>
-                <td>${patient.TotalAppointments}</td>
-                <td>${patient.TotalRecords}</td>
+                <td>${patientId}</td>
+                <td>${fullName}</td>
+                <td>${gender}</td>
+                <td>${totalAppointments}</td>
+                <td>${totalRecords}</td>
             </tr>
         `;
     });
