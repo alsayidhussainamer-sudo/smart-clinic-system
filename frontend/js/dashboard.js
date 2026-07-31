@@ -227,22 +227,22 @@ function clearSessionActivities() {
 // =========================
 
 async function loadDashboard() {
-    const patientsResponse = await secureFetch("http://localhost:4000/patients");
+    const patientsResponse = await secureFetch("/patients");
     if (!patientsResponse) return;
     const patients = await patientsResponse.json();
     document.getElementById("patientsCount").innerText = patients.length;
 
-    const doctorsResponse = await secureFetch("http://localhost:4000/doctors");
+    const doctorsResponse = await secureFetch("/doctors");
     if (!doctorsResponse) return;
     const doctors = await doctorsResponse.json();
     document.getElementById("doctorsCount").innerText = doctors.length;
 
-    const appointmentsResponse = await secureFetch("http://localhost:4000/appointments");
+    const appointmentsResponse = await secureFetch("/appointments");
     if (!appointmentsResponse) return;
     const appointments = await appointmentsResponse.json();
     document.getElementById("appointmentsCount").innerText = appointments.length;
 
-    const recordsResponse = await secureFetch("http://localhost:4000/medical-records");
+    const recordsResponse = await secureFetch("/medical-records");
     if (!recordsResponse) return;
     const records = await recordsResponse.json();
     document.getElementById("recordsCount").innerText = records.length;
@@ -638,7 +638,7 @@ function renderAIConsultationsList(consultations) {
 // =========================
 
 async function loadPatients() {
-    const response = await secureFetch("http://localhost:4000/patients");
+    const response = await secureFetch("/patients");
     if (!response) return;
 
     allPatients = await response.json();
@@ -674,8 +674,8 @@ async function addPatient() {
     }
 
     const url = window.currentPatientId
-        ? `http://localhost:4000/patients/${window.currentPatientId}`
-        : "http://localhost:4000/patients";
+        ? `/patients/${window.currentPatientId}`
+        : "/patients";
 
     const method = window.currentPatientId ? "PUT" : "POST";
 
@@ -705,7 +705,7 @@ async function addPatient() {
 async function deletePatient(id) {
     if (!confirm(t("confirmDelete"))) return;
 
-    const response = await secureFetch(`http://localhost:4000/patients/${id}`, {
+    const response = await secureFetch(`/patients/${id}`, {
         method: "DELETE"
     });
 
@@ -724,7 +724,7 @@ async function deletePatient(id) {
 }
 
 async function editPatient(id) {
-    const response = await secureFetch(`http://localhost:4000/patients/${id}`);
+    const response = await secureFetch(`/patients/${id}`);
     if (!response) return;
 
     const patient = await response.json();
@@ -747,7 +747,7 @@ async function editPatient(id) {
 // =========================
 
 async function loadDoctors() {
-    const response = await secureFetch("http://localhost:4000/doctors");
+    const response = await secureFetch("/doctors");
     if (!response) return;
 
     allDoctors = await response.json();
@@ -757,7 +757,7 @@ async function loadDoctors() {
 async function deleteDoctor(id) {
     if (!confirm(t("confirmDelete"))) return;
 
-    const response = await secureFetch(`http://localhost:4000/doctors/${id}`, {
+    const response = await secureFetch(`/doctors/${id}`, {
         method: "DELETE"
     });
 
@@ -785,7 +785,7 @@ async function openDoctorModal() {
     const specialtySelect = document.getElementById("doctorSpecialtyId");
     specialtySelect.innerHTML = `<option value="">${t("selectSpecialty")}</option>`;
 
-    const response = await secureFetch("http://localhost:4000/specialties");
+    const response = await secureFetch("/specialties");
     if (!response) return;
 
     const specialties = await response.json();
@@ -818,8 +818,8 @@ async function addDoctor() {
     }
 
     const url = window.currentDoctorId
-        ? `http://localhost:4000/doctors/${window.currentDoctorId}`
-        : "http://localhost:4000/doctors";
+        ? `/doctors/${window.currentDoctorId}`
+        : "/doctors";
 
     const method = window.currentDoctorId ? "PUT" : "POST";
 
@@ -847,7 +847,7 @@ async function addDoctor() {
 }
 
 async function editDoctor(id) {
-    const response = await secureFetch("http://localhost:4000/doctors");
+    const response = await secureFetch("/doctors");
     if (!response) return;
 
     const doctors = await response.json();
@@ -866,7 +866,7 @@ async function editDoctor(id) {
     const specialtySelect = document.getElementById("doctorSpecialtyId");
     specialtySelect.innerHTML = `<option value="">${t("selectSpecialty")}</option>`;
 
-    const specialtiesResponse = await secureFetch("http://localhost:4000/specialties");
+    const specialtiesResponse = await secureFetch("/specialties");
     if (!specialtiesResponse) return;
 
     const specialties = await specialtiesResponse.json();
@@ -892,7 +892,7 @@ async function editDoctor(id) {
 // =========================
 
 async function loadAppointments() {
-    const response = await secureFetch("http://localhost:4000/appointments");
+    const response = await secureFetch("/appointments");
     if (!response) return;
 
     allAppointments = await response.json();
@@ -906,7 +906,7 @@ async function openAppointmentModal() {
     patientSelect.innerHTML = "";
     doctorSelect.innerHTML = "";
 
-    const patientsResponse = await secureFetch("http://localhost:4000/patients");
+    const patientsResponse = await secureFetch("/patients");
     if (!patientsResponse) return;
     const patients = await patientsResponse.json();
 
@@ -916,7 +916,7 @@ async function openAppointmentModal() {
         `;
     });
 
-    const doctorsResponse = await secureFetch("http://localhost:4000/doctors");
+    const doctorsResponse = await secureFetch("/doctors");
     if (!doctorsResponse) return;
     const doctors = await doctorsResponse.json();
 
@@ -953,8 +953,8 @@ async function addAppointment() {
     }
 
     const url = window.currentAppointmentId
-        ? `http://localhost:4000/appointments/${window.currentAppointmentId}`
-        : "http://localhost:4000/appointments";
+        ? `/appointments/${window.currentAppointmentId}`
+        : "/appointments";
 
     const method = window.currentAppointmentId ? "PUT" : "POST";
 
@@ -984,7 +984,7 @@ async function addAppointment() {
 async function deleteAppointment(id) {
     if (!confirm(t("confirmDelete"))) return;
 
-    const response = await secureFetch(`http://localhost:4000/appointments/${id}`, {
+    const response = await secureFetch(`/appointments/${id}`, {
         method: "DELETE"
     });
 
@@ -1003,7 +1003,7 @@ async function deleteAppointment(id) {
 }
 
 async function editAppointment(id) {
-    const response = await secureFetch("http://localhost:4000/appointments");
+    const response = await secureFetch("/appointments");
     if (!response) return;
 
     const appointments = await response.json();
@@ -1033,7 +1033,7 @@ async function editAppointment(id) {
 // =========================
 
 async function loadMedicalRecords() {
-    const response = await secureFetch("http://localhost:4000/medical-records");
+    const response = await secureFetch("/medical-records");
     if (!response) return;
 
     allMedicalRecords = await response.json();
@@ -1041,8 +1041,8 @@ async function loadMedicalRecords() {
 }
 
 async function openMedicalRecordModal() {
-    const patientsResponse = await secureFetch("http://localhost:4000/patients");
-    const doctorsResponse = await secureFetch("http://localhost:4000/doctors");
+    const patientsResponse = await secureFetch("/patients");
+    const doctorsResponse = await secureFetch("/doctors");
 
     if (!patientsResponse || !doctorsResponse) return;
 
@@ -1094,8 +1094,8 @@ async function addMedicalRecord() {
     }
 
     const url = window.currentMedicalRecordId
-        ? `http://localhost:4000/medical-records/${window.currentMedicalRecordId}`
-        : "http://localhost:4000/medical-records";
+        ? `/medical-records/${window.currentMedicalRecordId}`
+        : "/medical-records";
 
     const method = window.currentMedicalRecordId ? "PUT" : "POST";
 
@@ -1125,7 +1125,7 @@ async function addMedicalRecord() {
 async function deleteMedicalRecord(id) {
     if (!confirm(t("confirmDelete"))) return;
 
-    const response = await secureFetch(`http://localhost:4000/medical-records/${id}`, {
+    const response = await secureFetch(`/medical-records/${id}`, {
         method: "DELETE"
     });
 
@@ -1144,7 +1144,7 @@ async function deleteMedicalRecord(id) {
 }
 
 async function editMedicalRecord(id) {
-    const response = await secureFetch("http://localhost:4000/medical-records");
+    const response = await secureFetch("/medical-records");
     if (!response) return;
 
     const records = await response.json();
@@ -1171,7 +1171,7 @@ async function editMedicalRecord(id) {
 // =========================
 
 async function loadPrescriptions() {
-    const response = await secureFetch("http://localhost:4000/prescriptions");
+    const response = await secureFetch("/prescriptions");
     if (!response) return;
 
     allPrescriptions = await response.json();
@@ -1182,7 +1182,7 @@ async function openPrescriptionModal() {
     window.currentPrescriptionId = null;
 
     // Load medical records for dropdown
-    const recordsResponse = await secureFetch("http://localhost:4000/medical-records");
+    const recordsResponse = await secureFetch("/medical-records");
     if (!recordsResponse) return;
 
     const records = await recordsResponse.json();
@@ -1217,8 +1217,8 @@ async function savePrescription() {
     }
 
     const url = window.currentPrescriptionId
-        ? `http://localhost:4000/prescriptions/${window.currentPrescriptionId}`
-        : "http://localhost:4000/prescriptions";
+        ? `/prescriptions/${window.currentPrescriptionId}`
+        : "/prescriptions";
 
     const method = window.currentPrescriptionId ? "PUT" : "POST";
 
@@ -1247,7 +1247,7 @@ async function savePrescription() {
 async function deletePrescription(id) {
     if (!confirm(t("confirmDelete"))) return;
 
-    const response = await secureFetch(`http://localhost:4000/prescriptions/${id}`, {
+    const response = await secureFetch(`/prescriptions/${id}`, {
         method: "DELETE"
     });
 
@@ -1265,7 +1265,7 @@ async function deletePrescription(id) {
 }
 
 async function editPrescription(id) {
-    const response = await secureFetch("http://localhost:4000/prescriptions");
+    const response = await secureFetch("/prescriptions");
     if (!response) return;
 
     const prescriptions = await response.json();
@@ -1290,7 +1290,7 @@ async function editPrescription(id) {
 // =========================
 
 async function loadAIConsultations() {
-    const response = await secureFetch("http://localhost:4000/ai-consultations");
+    const response = await secureFetch("/ai-consultations");
     if (!response) return;
 
     allAIConsultations = await response.json();
@@ -1300,7 +1300,7 @@ async function loadAIConsultations() {
 async function deleteAIConsultation(id) {
     if (!confirm(t("confirmDelete"))) return;
 
-    const response = await secureFetch(`http://localhost:4000/ai-consultations/${id}`, {
+    const response = await secureFetch(`/ai-consultations/${id}`, {
         method: "DELETE"
     });
 
@@ -1331,7 +1331,7 @@ async function aiSuggestMedicalRecord() {
         aiButton.disabled = true;
         aiButton.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> ${t("generating")}`;
 
-        const response = await secureFetch("http://localhost:4000/api/ai/suggest", {
+        const response = await secureFetch("/api/ai/suggest", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ 
@@ -1402,7 +1402,7 @@ async function loadReports() {
         return;
     }
 
-    const statsResponse = await secureFetch("http://localhost:4000/reports/statistics");
+    const statsResponse = await secureFetch("/reports/statistics");
     if (!statsResponse) return;
     const stats = await statsResponse.json();
 
@@ -1420,7 +1420,7 @@ async function loadReports() {
 }
 
 async function loadAppointmentsReport() {
-    const response = await secureFetch("http://localhost:4000/reports/appointments");
+    const response = await secureFetch("/reports/appointments");
     if (!response) return;
 
     const appointments = await response.json();
@@ -1448,7 +1448,7 @@ async function filterAppointments() {
     const endDate = document.getElementById("reportEndDate").value;
     const status = document.getElementById("reportStatus").value;
 
-    let url = "http://localhost:4000/reports/appointments?";
+    let url = "/reports/appointments?";
     if (startDate) url += `startDate=${startDate}&`;
     if (endDate) url += `endDate=${endDate}&`;
     if (status) url += `status=${status}&`;
@@ -1479,7 +1479,7 @@ async function filterAppointments() {
 }
 
 async function loadDoctorsReport() {
-    const response = await secureFetch("http://localhost:4000/reports/doctors");
+    const response = await secureFetch("/reports/doctors");
     if (!response) return;
 
     const doctors = await response.json();
@@ -1500,7 +1500,7 @@ async function loadDoctorsReport() {
 }
 
 async function loadPatientsReport() {
-    const response = await secureFetch("http://localhost:4000/reports/patients");
+    const response = await secureFetch("/reports/patients");
     if (!response) return;
 
     const patients = await response.json();
@@ -1571,7 +1571,7 @@ async function loadUsers() {
         return;
     }
 
-    const response = await secureFetch("http://localhost:4000/users");
+    const response = await secureFetch("/users");
     if (!response) return;
 
     allUsers = await response.json();
@@ -1610,12 +1610,12 @@ async function saveUser() {
         return;
     }
 
-    let url = "http://localhost:4000/users/register";
+    let url = "/users/register";
     let method = "POST";
     let bodyData = { username: user.username, password: user.password, role: user.role };
 
     if (window.currentUserId) {
-        url = `http://localhost:4000/users/${window.currentUserId}`;
+        url = `/users/${window.currentUserId}`;
         method = "PUT";
         bodyData = { username: user.username, role: user.role };
     }
@@ -1649,7 +1649,7 @@ async function deleteUser(id) {
 
     if (!confirm(t("confirmDelete"))) return;
 
-    const response = await secureFetch(`http://localhost:4000/users/${id}`, {
+    const response = await secureFetch(`/users/${id}`, {
         method: "DELETE"
     });
 
@@ -1769,7 +1769,7 @@ async function sendChatbotMessage() {
     messagesBox.scrollTop = messagesBox.scrollHeight;
 
     try {
-        const response = await secureFetch("http://localhost:4000/api/ai/chat", {
+        const response = await secureFetch("/api/ai/chat", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ message })
