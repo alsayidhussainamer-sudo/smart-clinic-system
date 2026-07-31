@@ -271,13 +271,14 @@ async function loadDashboard() {
     });
 
     sortedAppointments.slice(0, 5).forEach(appointment => {
-        const statusClass = appointment.Status.toLowerCase();
-        const statusText = t(statusClass) || appointment.Status;
+        const statusVal = appointment.Status || '';
+        const statusClass = statusVal.toLowerCase();
+        const statusText = t(statusClass) || statusVal || 'N/A';
         recentTable.innerHTML += `
             <tr>
-                <td>${appointment.PatientName}</td>
-                <td>${appointment.DoctorName}</td>
-                <td>${formatDate(appointment.AppointmentDate)} ${formatTime(appointment.AppointmentTime)}</td>
+                <td>${appointment.PatientName || 'N/A'}</td>
+                <td>${appointment.DoctorName || 'N/A'}</td>
+                <td>${formatDate(appointment.AppointmentDate || appointment.appointmentdate)} ${formatTime(appointment.AppointmentTime || appointment.appointmenttime)}</td>
                 <td><span class="status-badge status-${statusClass}">${statusText}</span></td>
             </tr>
         `;
@@ -354,11 +355,13 @@ function searchDoctors(query) {
 }
 
 function searchAppointments(query) {
-    const filtered = allAppointments.filter(appointment =>
-        (appointment.PatientName && appointment.PatientName.toLowerCase().includes(query.toLowerCase())) ||
-        (appointment.DoctorName && appointment.DoctorName.toLowerCase().includes(query.toLowerCase())) ||
-        appointment.Status.toLowerCase().includes(query.toLowerCase())
-    );
+    const q = query.toLowerCase();
+    const filtered = allAppointments.filter(appointment => {
+        const patientName = (appointment.PatientName || '').toLowerCase();
+        const doctorName = (appointment.DoctorName || '').toLowerCase();
+        const status = (appointment.Status || '').toLowerCase();
+        return patientName.includes(q) || doctorName.includes(q) || status.includes(q);
+    });
     renderAppointmentsTable(filtered);
 }
 
@@ -510,28 +513,33 @@ function renderAppointmentsTable(appointments) {
     }
 
     appointments.forEach(appointment => {
-        const statusClass = appointment.Status.toLowerCase();
-        const statusText = t(statusClass) || appointment.Status;
+        const statusVal = appointment.Status || '';
+        const statusClass = statusVal.toLowerCase();
+        const statusText = t(statusClass) || statusVal || 'N/A';
 
         // Show cancellation reason tooltip if cancelled
         let cancelInfo = "";
-        if (appointment.Status === "Cancelled" && appointment.CancellationReason) {
+        if (statusVal === "Cancelled" && appointment.CancellationReason) {
             cancelInfo = ` title="❌ Cancelled: ${appointment.CancellationReason.replace(/"/g, '&quot;')}"`;
         }
 
+        const apptId = appointment.AppointmentId || appointment.appointmentid;
+        const patientName = appointment.PatientName || appointment.PatientId || appointment.patientid || 'N/A';
+        const doctorName = appointment.DoctorName || appointment.DoctorId || appointment.doctorid || 'N/A';
+
         tableBody.innerHTML += `
             <tr${cancelInfo}>
-                <td>${appointment.AppointmentId}</td>
-                <td>${appointment.PatientName || appointment.PatientId}</td>
-                <td>${appointment.DoctorName || appointment.DoctorId}</td>
-                <td>${formatDate(appointment.AppointmentDate)}</td>
-                <td>${formatTime(appointment.AppointmentTime)}</td>
+                <td>${apptId}</td>
+                <td>${patientName}</td>
+                <td>${doctorName}</td>
+                <td>${formatDate(appointment.AppointmentDate || appointment.appointmentdate)}</td>
+                <td>${formatTime(appointment.AppointmentTime || appointment.appointmenttime)}</td>
                 <td><span class="status-badge status-${statusClass}">${statusText}</span></td>
                 <td>
-                    <button class="btn btn-warning btn-sm" onclick="editAppointment(${appointment.AppointmentId})">
+                    <button class="btn btn-warning btn-sm" onclick="editAppointment(${apptId})">
                         <i class="fa-solid fa-pen"></i> ${t("edit")}
                     </button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteAppointment(${appointment.AppointmentId})">
+                    <button class="btn btn-danger btn-sm" onclick="deleteAppointment(${apptId})">
                         <i class="fa-solid fa-trash"></i> ${t("delete")}
                     </button>
                 </td>
@@ -592,7 +600,7 @@ function renderUsersTable(users) {
     users.forEach(user => {
         const userId = user.UserId || user.userid;
         const username = user.Username || user.username;
-        const role = user.Role || user.role;
+        const role = user.Role || user.role || 'Unknown';
 
         tableBody.innerHTML += `
             <tr>
@@ -1505,15 +1513,16 @@ async function loadAppointmentsReport() {
     tableBody.innerHTML = "";
 
     appointments.forEach(appointment => {
-        const statusClass = appointment.Status.toLowerCase();
-        const statusText = t(statusClass) || appointment.Status;
+        const statusVal = appointment.Status || '';
+        const statusClass = statusVal.toLowerCase();
+        const statusText = t(statusClass) || statusVal || 'N/A';
         tableBody.innerHTML += `
             <tr>
-                <td>${appointment.AppointmentId}</td>
-                <td>${appointment.PatientName}</td>
-                <td>${appointment.DoctorName}</td>
-                <td>${formatDate(appointment.AppointmentDate)}</td>
-                <td>${appointment.AppointmentTime}</td>
+                <td>${appointment.AppointmentId || appointment.appointmentid}</td>
+                <td>${appointment.PatientName || 'N/A'}</td>
+                <td>${appointment.DoctorName || 'N/A'}</td>
+                <td>${formatDate(appointment.AppointmentDate || appointment.appointmentdate)}</td>
+                <td>${appointment.AppointmentTime || appointment.appointmenttime || 'N/A'}</td>
                 <td><span class="status-badge status-${statusClass}">${statusText}</span></td>
             </tr>
         `;
@@ -1538,15 +1547,16 @@ async function filterAppointments() {
     tableBody.innerHTML = "";
 
     appointments.forEach(appointment => {
-        const statusClass = appointment.Status.toLowerCase();
-        const statusText = t(statusClass) || appointment.Status;
+        const statusVal = appointment.Status || '';
+        const statusClass = statusVal.toLowerCase();
+        const statusText = t(statusClass) || statusVal || 'N/A';
         tableBody.innerHTML += `
             <tr>
-                <td>${appointment.AppointmentId}</td>
-                <td>${appointment.PatientName}</td>
-                <td>${appointment.DoctorName}</td>
-                <td>${formatDate(appointment.AppointmentDate)}</td>
-                <td>${appointment.AppointmentTime}</td>
+                <td>${appointment.AppointmentId || appointment.appointmentid}</td>
+                <td>${appointment.PatientName || 'N/A'}</td>
+                <td>${appointment.DoctorName || 'N/A'}</td>
+                <td>${formatDate(appointment.AppointmentDate || appointment.appointmentdate)}</td>
+                <td>${appointment.AppointmentTime || appointment.appointmenttime || 'N/A'}</td>
                 <td><span class="status-badge status-${statusClass}">${statusText}</span></td>
             </tr>
         `;

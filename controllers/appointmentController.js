@@ -3,14 +3,14 @@ const db = require("../database/db");
 exports.getAppointments = (req, res) => {
     const sql = `
     SELECT 
-        appointments.appointmentid,
-        appointments.patientid,
-        appointments.doctorid,
+        appointments.appointmentid AS AppointmentId,
+        appointments.patientid AS PatientId,
+        appointments.doctorid AS DoctorId,
         patients.fullname AS PatientName,
         doctors.fullname AS DoctorName,
-        appointments.appointmentdate,
-        appointments.appointmenttime,
-        appointments.status
+        appointments.appointmentdate AS AppointmentDate,
+        appointments.appointmenttime AS AppointmentTime,
+        appointments.status AS Status
     FROM appointments
     JOIN patients ON appointments.patientid = patients.patientid
     JOIN doctors ON appointments.doctorid = doctors.doctorid

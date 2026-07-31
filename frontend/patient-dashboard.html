@@ -608,6 +608,7 @@
 <base target="_blank">
 <base target="_blank">
 <base target="_blank">
+<base target="_blank">
 </head>
 <body>
 
@@ -1039,7 +1040,7 @@ async function loadDashboardStats() {
                                 <p class="mb-1 text-muted">${I18n.currentLang === 'ar' ? (a.SpecialtyNameAr || a.SpecialtyName || t('general')) : (a.SpecialtyName || a.SpecialtyNameAr || t('general'))}</p>
                                 <p class="mb-0"><i class="fa-solid fa-calendar"></i> ${formatDate(a.AppointmentDate)} &nbsp; <i class="fa-solid fa-clock"></i> ${formatTime(a.AppointmentTime)}</p>
                             </div>
-                            <span class="status-badge status-${a.Status.toLowerCase()}">${t(a.Status.toLowerCase())}</span>
+                            <span class="status-badge status-${(a.Status || '').toLowerCase()}">${t((a.Status || '').toLowerCase())}</span>
                         </div>
                     </div>
                 `).join('');
@@ -1166,7 +1167,7 @@ async function loadDashboardStats() {
                             <p class="mb-1"><i class="fa-solid fa-calendar"></i> ${formatDate(a.AppointmentDate)}</p>
                             <p class="mb-0"><i class="fa-solid fa-clock"></i> ${formatTime(a.AppointmentTime)}</p>
                         </div>
-                        <span class="status-badge status-${a.Status.toLowerCase()}">${t(a.Status.toLowerCase())}</span>
+                        <span class="status-badge status-${(a.Status || '').toLowerCase()}">${t((a.Status || '').toLowerCase())}</span>
                     </div>
                     ${actions}
                 </div>

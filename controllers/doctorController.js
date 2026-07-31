@@ -96,20 +96,48 @@ exports.deleteDoctor = (req, res) => {
 
     const doctorId = req.params.id;
 
-    const sql = "DELETE FROM doctors WHERE doctorid = ?";
-
-    db.query(sql, [doctorId], (err) => {
-
+    // Check for related appointments first
+    const checkAppointmentsSql = "SELECT COUNT(*) AS count FROM appointments WHERE doctorid = ?";
+    db.query(checkAppointmentsSql, [doctorId], (err, result) => {
         if (err) {
             console.log(err);
+            return res.status(500).json({ message: "Database error while checking appointments" });
+        }
 
-            return res.status(500).json({
-                message: "Error deleting doctor"
+        if (result[0].count > 0) {
+            return res.status(400).json({
+                message: "Cannot delete doctor. This doctor has " + result[0].count + " appointment(s). Please delete the appointments first."
             });
         }
 
-        res.json({
-            message: "Doctor deleted successfully ✅"
+        // Check for related medical records
+        const checkRecordsSql = "SELECT COUNT(*) AS count FROM medicalrecords WHERE doctorid = ?";
+        db.query(checkRecordsSql, [doctorId], (err, result) => {
+            if (err) {
+                console.log(err);
+                return res.status(500).json({ message: "Database error while checking medical records" });
+            }
+
+            if (result[0].count > 0) {
+                return res.status(400).json({
+                    message: "Cannot delete doctor. This doctor has " + result[0].count + " medical record(s). Please delete the medical records first."
+                });
+            }
+
+            // Safe to delete
+            const sql = "DELETE FROM doctors WHERE doctorid = ?";
+            db.query(sql, [doctorId], (err) => {
+                if (err) {
+                    console.log(err);
+                    return res.status(500).json({
+                        message: "Error deleting doctor"
+                    });
+                }
+
+                res.json({
+                    message: "Doctor deleted successfully ✅"
+                });
+            });
         });
     });
 };
