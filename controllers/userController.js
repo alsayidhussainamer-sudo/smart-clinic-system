@@ -15,7 +15,7 @@ exports.register = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const sql = `
-            INSERT INTO Users (Username, PasswordHash, Role)
+            INSERT INTO users (Username, PasswordHash, Role)
             VALUES (?, ?, ?)
         `;
 
@@ -58,7 +58,7 @@ exports.login = (req, res) => {
     } = req.body;
 
     const sql = `
-        SELECT * FROM Users
+        SELECT * FROM users
         WHERE Username = ?
     `;
 
@@ -123,7 +123,7 @@ exports.getAllUsers = (req, res) => {
 
     const sql = `
         SELECT UserId, Username, Role
-        FROM Users
+        FROM users
     `;
 
     db.query(sql, (err, result) => {
@@ -155,7 +155,7 @@ exports.updateUser = (req, res) => {
     } = req.body;
 
     const sql = `
-        UPDATE Users
+        UPDATE users
         SET Username = ?, Role = ?
         WHERE UserId = ?
     `;
@@ -190,7 +190,7 @@ exports.deleteUser = (req, res) => {
     const { id } = req.params;
 
     const sql = `
-        DELETE FROM Users
+        DELETE FROM users
         WHERE UserId = ?
     `;
 
