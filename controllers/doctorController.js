@@ -4,15 +4,15 @@ exports.getDoctors = (req, res) => {
 
     const sql = `
         SELECT 
-            doctors.DoctorId,
-            doctors.FullName,
-            doctors.Phone,
-            doctors.Email,
-            doctors.SpecialtyId,
-            specialties.SpecialtyName,
-            specialties.SpecialtyNameAr
+            doctors.doctorid,
+            doctors.fullname,
+            doctors.phone,
+            doctors.email,
+            doctors.specialtyid,
+            specialties.specialtyname,
+            specialties.specialtynameAr
         FROM doctors
-        LEFT JOIN specialties ON doctors.SpecialtyId = specialties.SpecialtyId
+        LEFT JOIN specialties ON doctors.specialtyid = specialties.SpecialtyId
     `;
 
     db.query(sql, (err, result) => {
@@ -40,7 +40,7 @@ exports.addDoctor = (req, res) => {
 
     const sql = `
         INSERT INTO doctors
-        (SpecialtyId, FullName, Phone, Email)
+        (specialtyid, fullname, phone, email)
         VALUES (?, ?, ?, ?)
     `;
 
@@ -72,8 +72,8 @@ exports.updateDoctor = (req, res) => {
 
     const sql = `
         UPDATE doctors
-        SET FullName = ?, Phone = ?, Email = ?, SpecialtyId = ?
-        WHERE DoctorId = ?
+        SET fullname = ?, phone = ?, email = ?, specialtyid = ?
+        WHERE doctorid = ?
     `;
 
     db.query(sql, [fullName, phone, email, specialtyId, doctorId], (err) => {
@@ -96,7 +96,7 @@ exports.deleteDoctor = (req, res) => {
 
     const doctorId = req.params.id;
 
-    const sql = "DELETE FROM doctors WHERE DoctorId = ?";
+    const sql = "DELETE FROM doctors WHERE doctorid = ?";
 
     db.query(sql, [doctorId], (err) => {
 

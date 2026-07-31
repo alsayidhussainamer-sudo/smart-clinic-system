@@ -30,7 +30,7 @@ exports.addPatient = (req, res) => {
 
     const sql = `
         INSERT INTO patients
-        (FullName, Gender, BirthDate, Phone, Email, Address)
+        (fullname, gender, birthdate, phone, email, address)
         VALUES (?, ?, ?, ?, ?, ?)
     `;
 
@@ -56,7 +56,7 @@ exports.addPatient = (req, res) => {
 exports.getPatientById = (req, res) => {
     const patientId = req.params.id;
 
-    const sql = "SELECT * FROM patients WHERE PatientId = ?";
+    const sql = "SELECT * FROM patients WHERE patientid = ?";
 
     db.query(sql, [patientId], (err, result) => {
         if (err) {
@@ -79,8 +79,8 @@ exports.updatePatient = (req, res) => {
 
     const sql = `
         UPDATE patients
-        SET FullName = ?, Gender = ?, BirthDate = ?, Phone = ?, Email = ?, Address = ?
-        WHERE PatientId = ?
+        SET fullname = ?, gender = ?, birthdate = ?, phone = ?, email = ?, address = ?
+        WHERE patientid = ?
     `;
 
     db.query(sql, [fullName, gender, birthDate, phone, email, address, patientId], (err) => {
@@ -96,7 +96,7 @@ exports.updatePatient = (req, res) => {
 exports.deletePatient = (req, res) => {
     const patientId = req.params.id;
 
-    const sql = "DELETE FROM patients WHERE PatientId = ?";
+    const sql = "DELETE FROM patients WHERE patientid = ?";
 
     db.query(sql, [patientId], (err) => {
         if (err) {
