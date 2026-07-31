@@ -2,7 +2,7 @@ const db = require("../database/db");
 
 exports.getPatients = (req, res) => {
 
-    const sql = "SELECT * FROM Patients";
+    const sql = "SELECT * FROM patients";
 
     db.query(sql, (err, result) => {
 
@@ -29,7 +29,7 @@ exports.addPatient = (req, res) => {
     } = req.body;
 
     const sql = `
-        INSERT INTO Patients
+        INSERT INTO patients
         (FullName, Gender, BirthDate, Phone, Email, Address)
         VALUES (?, ?, ?, ?, ?, ?)
     `;
@@ -56,7 +56,7 @@ exports.addPatient = (req, res) => {
 exports.getPatientById = (req, res) => {
     const patientId = req.params.id;
 
-    const sql = "SELECT * FROM Patients WHERE PatientId = ?";
+    const sql = "SELECT * FROM patients WHERE PatientId = ?";
 
     db.query(sql, [patientId], (err, result) => {
         if (err) {
@@ -78,7 +78,7 @@ exports.updatePatient = (req, res) => {
     const { fullName, gender, birthDate, phone, email, address } = req.body;
 
     const sql = `
-        UPDATE Patients
+        UPDATE patients
         SET FullName = ?, Gender = ?, BirthDate = ?, Phone = ?, Email = ?, Address = ?
         WHERE PatientId = ?
     `;
@@ -96,7 +96,7 @@ exports.updatePatient = (req, res) => {
 exports.deletePatient = (req, res) => {
     const patientId = req.params.id;
 
-    const sql = "DELETE FROM Patients WHERE PatientId = ?";
+    const sql = "DELETE FROM patients WHERE PatientId = ?";
 
     db.query(sql, [patientId], (err) => {
         if (err) {

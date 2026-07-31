@@ -1,7 +1,7 @@
 const db = require("../database/db");
 
 exports.getSpecialties = (req, res) => {
-    const sql = "SELECT * FROM Specialties";
+    const sql = "SELECT * FROM specialties";
 
     db.query(sql, (err, result) => {
         if (err) {
@@ -17,7 +17,7 @@ exports.addSpecialty = (req, res) => {
     const { specialtyName, description } = req.body;
 
     const sql = `
-        INSERT INTO Specialties (SpecialtyName, Description)
+        INSERT INTO specialties (SpecialtyName, Description)
         VALUES (?, ?)
     `;
 

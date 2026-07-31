@@ -4,23 +4,23 @@ exports.getMedicalRecords = (req, res) => {
 
     const sql = `
         SELECT
-            MedicalRecords.RecordId,
-            MedicalRecords.PatientId,
-            MedicalRecords.DoctorId,
-            Patients.FullName AS PatientName,
-            Doctors.FullName AS DoctorName,
-            MedicalRecords.Symptoms,
-            MedicalRecords.Diagnosis,
-            MedicalRecords.Treatment,
-            MedicalRecords.VisitDate
+            medicalrecords.RecordId,
+            medicalrecords.PatientId,
+            medicalrecords.DoctorId,
+            patients.FullName AS PatientName,
+            doctors.FullName AS DoctorName,
+            medicalrecords.Symptoms,
+            medicalrecords.Diagnosis,
+            medicalrecords.Treatment,
+            medicalrecords.VisitDate
 
-        FROM MedicalRecords
+        FROM medicalrecords
 
-        JOIN Patients
-            ON MedicalRecords.PatientId = Patients.PatientId
+        JOIN patients
+            ON medicalrecords.PatientId = patients.PatientId
 
-        JOIN Doctors
-            ON MedicalRecords.DoctorId = Doctors.DoctorId
+            JOIN doctors
+                ON medicalrecords.DoctorId = doctors.DoctorId
     `;
 
     db.query(sql, (err, result) => {
@@ -57,7 +57,7 @@ exports.addMedicalRecord = (req, res) => {
     }
 
     const sql = `
-        INSERT INTO MedicalRecords
+        INSERT INTO medicalrecords
         (
             PatientId,
             DoctorId,
@@ -113,7 +113,7 @@ exports.updateMedicalRecord = (req, res) => {
     } = req.body;
 
     const sql = `
-        UPDATE MedicalRecords
+        UPDATE medicalrecords
         SET PatientId = ?,
             DoctorId = ?,
             Symptoms = ?,
@@ -145,7 +145,7 @@ exports.updateMedicalRecord = (req, res) => {
 exports.deleteMedicalRecord = (req, res) => {
     const { id } = req.params;
 
-    const sql = "DELETE FROM MedicalRecords WHERE RecordId = ?";
+    const sql = "DELETE FROM medicalrecords WHERE RecordId = ?";
 
     db.query(sql, [id], (err) => {
         if (err) {

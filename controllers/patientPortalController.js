@@ -16,7 +16,7 @@ exports.bookAppointment = (req, res) => {
     }
 
     // Check if doctor exists
-    db.query("SELECT * FROM Doctors WHERE DoctorId = ?", [doctorId], (err, doctors) => {
+    db.query("SELECT * FROM doctors WHERE DoctorId = ?", [doctorId], (err, doctors) => {
         if (err) {
             console.log(err);
             return res.status(500).json({ message: "Database error" });
@@ -28,7 +28,7 @@ exports.bookAppointment = (req, res) => {
 
         // Check for duplicate appointment (same doctor, date, time)
         const checkSql = `
-            SELECT * FROM Appointments 
+            SELECT * FROM appointments 
             WHERE PatientId = ? AND DoctorId = ? AND AppointmentDate = ? AND AppointmentTime = ? AND Status != 'Cancelled'
         `;
 
@@ -46,7 +46,7 @@ exports.bookAppointment = (req, res) => {
 
             // Insert appointment
             const insertSql = `
-                INSERT INTO Appointments (PatientId, DoctorId, AppointmentDate, AppointmentTime, Status)
+                INSERT INTO appointments (PatientId, DoctorId, AppointmentDate, AppointmentTime, Status)
                 VALUES (?, ?, ?, ?, 'Scheduled')
             `;
 
@@ -82,9 +82,9 @@ exports.getMyAppointments = (req, res) => {
             d.FullName AS DoctorName,
             s.SpecialtyName,
             s.SpecialtyNameAr
-        FROM Appointments a
-        JOIN Doctors d ON a.DoctorId = d.DoctorId
-        LEFT JOIN Specialties s ON d.SpecialtyId = s.SpecialtyId
+        FROM appointments a
+        JOIN doctors d ON a.DoctorId = d.DoctorId
+        LEFT JOIN specialties s ON d.SpecialtyId = s.SpecialtyId
         WHERE a.PatientId = ?
         ORDER BY a.AppointmentDate DESC, a.AppointmentTime DESC
     `;
@@ -110,7 +110,7 @@ exports.updateMyAppointment = (req, res) => {
 
     // Check if appointment belongs to patient and is scheduled
     const checkSql = `
-        SELECT * FROM Appointments 
+        SELECT * FROM appointments 
         WHERE AppointmentId = ? AND PatientId = ? AND Status = 'Scheduled'
     `;
 
@@ -127,7 +127,7 @@ exports.updateMyAppointment = (req, res) => {
         }
 
         const updateSql = `
-            UPDATE Appointments 
+            UPDATE appointments 
             SET AppointmentDate = ?, AppointmentTime = ?
             WHERE AppointmentId = ? AND PatientId = ?
         `;
@@ -154,7 +154,7 @@ exports.cancelMyAppointment = (req, res) => {
 
     // Check if appointment belongs to patient and is scheduled
     const checkSql = `
-        SELECT * FROM Appointments 
+        SELECT * FROM appointments 
         WHERE AppointmentId = ? AND PatientId = ? AND Status = 'Scheduled'
     `;
 
@@ -171,7 +171,7 @@ exports.cancelMyAppointment = (req, res) => {
         }
 
         const updateSql = `
-            UPDATE Appointments 
+            UPDATE appointments 
             SET Status = 'Cancelled',
                 CancellationReason = ?,
                 CancelledAt = NOW()
@@ -210,9 +210,9 @@ exports.getMyMedicalRecords = (req, res) => {
             d.FullName AS DoctorName,
             s.SpecialtyName,
             s.SpecialtyNameAr
-        FROM MedicalRecords mr
-        JOIN Doctors d ON mr.DoctorId = d.DoctorId
-        LEFT JOIN Specialties s ON d.SpecialtyId = s.SpecialtyId
+        FROM medicalrecords mr
+        JOIN doctors d ON mr.DoctorId = d.DoctorId
+        LEFT JOIN specialties s ON d.SpecialtyId = s.SpecialtyId
         WHERE mr.PatientId = ?
         ORDER BY mr.VisitDate DESC
     `;
@@ -244,9 +244,9 @@ exports.getMyMedicalRecordById = (req, res) => {
             mr.VisitDate,
             d.FullName AS DoctorName,
             s.SpecialtyName
-        FROM MedicalRecords mr
-        JOIN Doctors d ON mr.DoctorId = d.DoctorId
-        LEFT JOIN Specialties s ON d.SpecialtyId = s.SpecialtyId
+        FROM medicalrecords mr
+        JOIN doctors d ON mr.DoctorId = d.DoctorId
+        LEFT JOIN specialties s ON d.SpecialtyId = s.SpecialtyId
         WHERE mr.RecordId = ? AND mr.PatientId = ?
     `;
 
@@ -280,10 +280,10 @@ exports.getMyPrescriptions = (req, res) => {
             mr.VisitDate,
             d.FullName AS DoctorName,
             s.SpecialtyName
-        FROM Prescriptions p
-        JOIN MedicalRecords mr ON p.RecordId = mr.RecordId
-        JOIN Doctors d ON mr.DoctorId = d.DoctorId
-        LEFT JOIN Specialties s ON d.SpecialtyId = s.SpecialtyId
+        FROM prescriptions p
+        JOIN medicalrecords mr ON p.RecordId = mr.RecordId
+        JOIN doctors d ON mr.DoctorId = d.DoctorId
+        LEFT JOIN specialties s ON d.SpecialtyId = s.SpecialtyId
         WHERE mr.PatientId = ?
         ORDER BY mr.VisitDate DESC
     `;
@@ -307,7 +307,7 @@ exports.getMyPrescriptionsByRecord = (req, res) => {
     const patientId = req.patientId;
 
     // First verify the record belongs to this patient
-    const verifySql = "SELECT * FROM MedicalRecords WHERE RecordId = ? AND PatientId = ?";
+    const verifySql = "SELECT * FROM medicalrecords WHERE RecordId = ? AND PatientId = ?";
 
     db.query(verifySql, [recordId, patientId], (err, records) => {
         if (err || records.length === 0) {
@@ -320,7 +320,7 @@ exports.getMyPrescriptionsByRecord = (req, res) => {
                 p.MedicineName,
                 p.Dosage,
                 p.Instructions
-            FROM Prescriptions p
+            FROM prescriptions p
             WHERE p.RecordId = ?
             ORDER BY p.PrescriptionId DESC
         `;
@@ -349,8 +349,8 @@ exports.getAllDoctorsForPatient = (req, res) => {
             d.Email,
             s.SpecialtyName,
             s.SpecialtyNameAr
-        FROM Doctors d
-        LEFT JOIN Specialties s ON d.SpecialtyId = s.SpecialtyId
+        FROM doctors d
+        LEFT JOIN specialties s ON d.SpecialtyId = s.SpecialtyId
         ORDER BY d.FullName
     `;
 

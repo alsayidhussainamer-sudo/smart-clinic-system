@@ -7,15 +7,15 @@ const db = require("../database/db");
 exports.getAIConsultations = (req, res) => {
     const sql = `
         SELECT 
-            AIConsultations.ConsultationId,
-            AIConsultations.PatientId,
-            AIConsultations.SymptomsText,
-            AIConsultations.AIResponse,
-            AIConsultations.ConsultationDate,
-            Patients.FullName AS PatientName
-        FROM AIConsultations
-        LEFT JOIN Patients ON AIConsultations.PatientId = Patients.PatientId
-        ORDER BY AIConsultations.ConsultationDate DESC
+            aiconsultations.ConsultationId,
+            aiconsultations.PatientId,
+            aiconsultations.SymptomsText,
+            aiconsultations.AIResponse,
+            aiconsultations.ConsultationDate,
+            patients.FullName AS PatientName
+        FROM aiconsultations
+        LEFT JOIN patients ON aiconsultations.PatientId = patients.PatientId
+        ORDER BY aiconsultations.ConsultationDate DESC
     `;
 
     db.query(sql, (err, result) => {
@@ -41,7 +41,7 @@ exports.getConsultationsByPatient = (req, res) => {
             SymptomsText,
             AIResponse,
             ConsultationDate
-        FROM AIConsultations
+        FROM aiconsultations
         WHERE PatientId = ?
         ORDER BY ConsultationDate DESC
     `;
@@ -74,7 +74,7 @@ exports.addAIConsultation = (req, res) => {
     }
 
     const sql = `
-        INSERT INTO AIConsultations
+        INSERT INTO aiconsultations
         (PatientId, SymptomsText, AIResponse, ConsultationDate)
         VALUES (?, ?, ?, NOW())
     `;
@@ -99,7 +99,7 @@ exports.addAIConsultation = (req, res) => {
 exports.deleteAIConsultation = (req, res) => {
     const { id } = req.params;
 
-    const sql = "DELETE FROM AIConsultations WHERE ConsultationId = ?";
+    const sql = "DELETE FROM aiconsultations WHERE ConsultationId = ?";
 
     db.query(sql, [id], (err) => {
         if (err) {

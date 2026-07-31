@@ -4,15 +4,15 @@ exports.getDoctors = (req, res) => {
 
     const sql = `
         SELECT 
-            Doctors.DoctorId,
-            Doctors.FullName,
-            Doctors.Phone,
-            Doctors.Email,
-            Doctors.SpecialtyId,
-            Specialties.SpecialtyName,
-            Specialties.SpecialtyNameAr
-        FROM Doctors
-        LEFT JOIN Specialties ON Doctors.SpecialtyId = Specialties.SpecialtyId
+            doctors.DoctorId,
+            doctors.FullName,
+            doctors.Phone,
+            doctors.Email,
+            doctors.SpecialtyId,
+            specialties.SpecialtyName,
+            specialties.SpecialtyNameAr
+        FROM doctors
+        LEFT JOIN specialties ON doctors.SpecialtyId = specialties.SpecialtyId
     `;
 
     db.query(sql, (err, result) => {
@@ -39,7 +39,7 @@ exports.addDoctor = (req, res) => {
     } = req.body;
 
     const sql = `
-        INSERT INTO Doctors
+        INSERT INTO doctors
         (SpecialtyId, FullName, Phone, Email)
         VALUES (?, ?, ?, ?)
     `;

@@ -12,12 +12,12 @@ exports.getAppointmentsReport = (req, res) => {
             Appointments.AppointmentId,
             Patients.FullName AS PatientName,
             Doctors.FullName AS DoctorName,
-            Appointments.AppointmentDate,
-            Appointments.AppointmentTime,
-            Appointments.Status
-        FROM Appointments
-        JOIN Patients ON Appointments.PatientId = Patients.PatientId
-        JOIN Doctors ON Appointments.DoctorId = Doctors.DoctorId
+            appointments.AppointmentDate
+            appointments.Status
+            appointments.DoctorId
+        FROM appointments
+        JOIN patients ON appointments.PatientId = patients.PatientId
+        JOIN doctors ON appointments.DoctorId = doctors.DoctorId
         WHERE 1=1
     `;
     
@@ -43,7 +43,7 @@ exports.getAppointmentsReport = (req, res) => {
         params.push(doctorId);
     }
     
-    sql += " ORDER BY Appointments.AppointmentDate DESC";
+    sql += " ORDER BY appointments.AppointmentDate DESC";
     
     db.query(sql, params, (err, result) => {
         if (err) {
@@ -62,19 +62,19 @@ exports.getAppointmentsReport = (req, res) => {
 exports.getDoctorsReport = (req, res) => {
     const sql = `
         SELECT 
-            Doctors.DoctorId,
-            Doctors.FullName,
-            Doctors.Phone,
-            Doctors.Email,
-            Specialties.SpecialtyName,
-            COUNT(DISTINCT Appointments.AppointmentId) AS TotalAppointments,
-            COUNT(DISTINCT MedicalRecords.RecordId) AS TotalRecords
-        FROM Doctors
-        LEFT JOIN Specialties ON Doctors.SpecialtyId = Specialties.SpecialtyId
-        LEFT JOIN Appointments ON Doctors.DoctorId = Appointments.DoctorId
-        LEFT JOIN MedicalRecords ON Doctors.DoctorId = MedicalRecords.DoctorId
-        GROUP BY Doctors.DoctorId
-        ORDER BY TotalAppointments DESC
+            doctors.DoctorId,
+            doctors.FullName,
+            doctors.Phone,
+            doctors.Email,
+            specialties.SpecialtyName,
+            COUNT(DISTINCT appointments.AppointmentId) AS TotalAppointments,
+            COUNT(DISTINCT medicalrecords.RecordId) AS TotalRecords
+        FROM doctors
+        LEFT JOIN specialties ON doctors.SpecialtyId = specialties.SpecialtyId
+        LEFT JOIN appointments ON doctors.DoctorId = appointments.DoctorId
+        LEFT JOIN medicalrecords ON doctors.DoctorId = medicalrecords.DoctorId
+        GROUP BY doctors.DoctorId
+        ORDER BY totalAppointments DESC
     `;
     
     db.query(sql, (err, result) => {
@@ -94,17 +94,17 @@ exports.getDoctorsReport = (req, res) => {
 exports.getPatientsReport = (req, res) => {
     const sql = `
         SELECT 
-            Patients.PatientId,
-            Patients.FullName,
-            Patients.Gender,
-            Patients.Phone,
-            Patients.Email,
-            COUNT(DISTINCT Appointments.AppointmentId) AS TotalAppointments,
-            COUNT(DISTINCT MedicalRecords.RecordId) AS TotalRecords
-        FROM Patients
-        LEFT JOIN Appointments ON Patients.PatientId = Appointments.PatientId
-        LEFT JOIN MedicalRecords ON Patients.PatientId = MedicalRecords.PatientId
-        GROUP BY Patients.PatientId
+            patients.PatientId,
+            patients.FullName,
+            patients.Gender,
+            patients.Phone,
+            patients.Email,
+            COUNT(DISTINCT appointments.AppointmentId) AS TotalAppointments,
+            COUNT(DISTINCT medicalrecords.RecordId) AS TotalRecords
+        FROM patients
+        LEFT JOIN appointments ON patients.PatientId = appointments.PatientId
+        LEFT JOIN medicalrecords ON patients.PatientId = medicalrecords.PatientId
+        GROUP BY patients.PatientId
         ORDER BY TotalAppointments DESC
     `;
     
@@ -125,13 +125,13 @@ exports.getPatientsReport = (req, res) => {
 exports.getStatisticsSummary = (req, res) => {
     const sql = `
         SELECT 
-            (SELECT COUNT(*) FROM Patients) AS TotalPatients,
-            (SELECT COUNT(*) FROM Doctors) AS TotalDoctors,
-            (SELECT COUNT(*) FROM Appointments) AS TotalAppointments,
-            (SELECT COUNT(*) FROM MedicalRecords) AS TotalRecords,
-            (SELECT COUNT(*) FROM Appointments WHERE Status = 'Scheduled') AS ScheduledAppointments,
-            (SELECT COUNT(*) FROM Appointments WHERE Status = 'Completed') AS CompletedAppointments,
-            (SELECT COUNT(*) FROM Appointments WHERE Status = 'Cancelled') AS CancelledAppointments
+            (SELECT COUNT(*) FROM patients) AS TotalPatients,
+            (SELECT COUNT(*) FROM doctors) AS TotalDoctors,
+            (SELECT COUNT(*) FROM appointments) AS TotalAppointments,
+            (SELECT COUNT(*) FROM medicalrecords) AS TotalRecords,
+            (SELECT COUNT(*) FROM appointments WHERE Status = 'Scheduled') AS ScheduledAppointments,
+            (SELECT COUNT(*) FROM appointments WHERE Status = 'Completed') AS CompletedAppointments,
+            (SELECT COUNT(*) FROM appointments WHERE Status = 'Cancelled') AS CancelledAppointments
     `;
     
     db.query(sql, (err, result) => {

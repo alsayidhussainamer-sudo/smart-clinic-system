@@ -26,7 +26,7 @@ exports.patientRegister = async (req, res) => {
 
     try {
         // Check if email already exists
-        const checkSql = "SELECT * FROM Patients WHERE Email = ?";
+        const checkSql = "SELECT * FROM patients WHERE Email = ?";
         db.query(checkSql, [email], async (err, result) => {
             if (err) {
                 console.log(err);
@@ -44,7 +44,7 @@ exports.patientRegister = async (req, res) => {
 
             // Insert patient with password
             const insertSql = `
-                INSERT INTO Patients 
+                INSERT INTO patients 
                 (FullName, Phone, Email, PasswordHash, Gender, BirthDate, Address, IsActive)
                 VALUES (?, ?, ?, ?, ?, ?, ?, TRUE)
             `;
@@ -87,7 +87,7 @@ exports.patientLogin = (req, res) => {
 
     const sql = `
         SELECT PatientId, FullName, Email, PasswordHash, IsActive
-        FROM Patients
+        FROM patients
         WHERE Email = ? AND PasswordHash IS NOT NULL
     `;
 
@@ -151,7 +151,7 @@ exports.getPatientProfile = (req, res) => {
 
     const sql = `
         SELECT PatientId, FullName, Gender, BirthDate, Phone, Email, Address
-        FROM Patients
+        FROM patients
         WHERE PatientId = ?
     `;
 
@@ -178,7 +178,7 @@ exports.updatePatientProfile = async (req, res) => {
     const { fullName, phone, address, birthDate, gender } = req.body;
 
     const sql = `
-        UPDATE Patients
+        UPDATE patients
         SET FullName = ?, Phone = ?, Address = ?, BirthDate = ?, Gender = ?
         WHERE PatientId = ?
     `;
@@ -207,7 +207,7 @@ exports.changePassword = async (req, res) => {
         });
     }
 
-    const sql = "SELECT PasswordHash FROM Patients WHERE PatientId = ?";
+    const sql = "SELECT PasswordHash FROM patients WHERE PatientId = ?";
 
     db.query(sql, [patientId], async (err, result) => {
         if (err || result.length === 0) {
@@ -223,7 +223,7 @@ exports.changePassword = async (req, res) => {
         const hashedNewPassword = await bcrypt.hash(newPassword, 10);
 
         db.query(
-            "UPDATE Patients SET PasswordHash = ? WHERE PatientId = ?",
+            "UPDATE patients SET PasswordHash = ? WHERE PatientId = ?",
             [hashedNewPassword, patientId],
             (err) => {
                 if (err) return res.status(500).json({ message: "Error changing password" });

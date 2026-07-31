@@ -6,22 +6,22 @@ const db = require("../database/db");
 
 exports.getPrescriptions = (req, res) => {
     const sql = `
-        SELECT 
-            Prescriptions.PrescriptionId,
-            Prescriptions.RecordId,
-            Prescriptions.MedicineName,
-            Prescriptions.Dosage,
-            Prescriptions.Instructions,
-            MedicalRecords.PatientId,
-            MedicalRecords.DoctorId,
-            Patients.FullName AS PatientName,
-            Doctors.FullName AS DoctorName,
-            MedicalRecords.VisitDate
-        FROM Prescriptions
-        JOIN MedicalRecords ON Prescriptions.RecordId = MedicalRecords.RecordId
-        JOIN Patients ON MedicalRecords.PatientId = Patients.PatientId
-        JOIN Doctors ON MedicalRecords.DoctorId = Doctors.DoctorId
-        ORDER BY Prescriptions.PrescriptionId DESC
+        SELECT
+            prescriptions.PrescriptionId,
+            prescriptions.RecordId,
+            prescriptions.MedicineName,
+            prescriptions.Dosage,
+            prescriptions.Instructions,
+            medicalrecords.PatientId,
+            medicalrecords.DoctorId,
+            patients.FullName AS PatientName,
+            doctors.FullName AS DoctorName,
+            medicalrecords.VisitDate
+        FROM prescriptions
+        JOIN medicalrecords ON prescriptions.RecordId = medicalrecords.RecordId
+        JOIN patients ON medicalrecords.PatientId = patients.PatientId
+        JOIN doctors ON medicalrecords.DoctorId = doctors.DoctorId
+        ORDER BY prescriptions.PrescriptionId DESC
     `;
 
     db.query(sql, (err, result) => {
@@ -47,8 +47,8 @@ exports.getPrescriptionsByRecord = (req, res) => {
             Prescriptions.MedicineName,
             Prescriptions.Dosage,
             Prescriptions.Instructions
-        FROM Prescriptions
-        WHERE Prescriptions.RecordId = ?
+        FROM prescriptions
+        WHERE prescriptions.RecordId = ?
     `;
 
     db.query(sql, [recordId], (err, result) => {
@@ -80,7 +80,7 @@ exports.addPrescription = (req, res) => {
     }
 
     const sql = `
-        INSERT INTO Prescriptions
+        INSERT INTO prescriptions
         (RecordId, MedicineName, Dosage, Instructions)
         VALUES (?, ?, ?, ?)
     `;
@@ -112,7 +112,7 @@ exports.updatePrescription = (req, res) => {
     } = req.body;
 
     const sql = `
-        UPDATE Prescriptions
+        UPDATE prescriptions
         SET RecordId = ?, MedicineName = ?, Dosage = ?, Instructions = ?
         WHERE PrescriptionId = ?
     `;
@@ -134,7 +134,7 @@ exports.updatePrescription = (req, res) => {
 exports.deletePrescription = (req, res) => {
     const { id } = req.params;
 
-    const sql = "DELETE FROM Prescriptions WHERE PrescriptionId = ?";
+    const sql = "DELETE FROM prescriptions WHERE PrescriptionId = ?";
 
     db.query(sql, [id], (err) => {
         if (err) {

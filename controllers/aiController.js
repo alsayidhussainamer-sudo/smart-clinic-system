@@ -53,7 +53,7 @@ exports.generateMedicalSuggestion = async (req, res) => {
 
         // Save to AIConsultations if patientId provided
         if (patientId) {
-            const saveSql = "INSERT INTO AIConsultations (PatientId, SymptomsText, AIResponse, ConsultationDate) VALUES (?, ?, ?, NOW())";
+            const saveSql = "INSERT INTO aiconsultations (PatientId, SymptomsText, AIResponse, ConsultationDate) VALUES (?, ?, ?, NOW())";
             db.query(saveSql, [patientId, symptoms, text], (err) => {
                 if (err) console.log("Error saving AI consultation:", err);
             });
