@@ -32,6 +32,8 @@ exports.generateMedicalSuggestion = async (req, res) => {
             "https://openrouter.ai/api/v1/chat/completions",
             {
                 model: "openrouter/auto",
+                max_tokens: 2048,        // ✅ أضفنا هذا
+                temperature: 0.7,        // ✅ للاتساق
                 messages: [
                     {
                         role: "user",
@@ -81,7 +83,7 @@ function containsArabic(text) {
 exports.chatWithAI = async (req, res) => {
     try {
         const { message } = req.body;
-        const userRole = req.user?.role || req.user?.type; // "Admin", "Doctor", "Receptionist", or "patient"
+        const userRole = req.user?.role || req.user?.type;
         const userId = req.user?.id;
 
         const isArabic = containsArabic(message);
@@ -236,6 +238,8 @@ exports.chatWithAI = async (req, res) => {
                 "https://openrouter.ai/api/v1/chat/completions",
                 {
                     model: "openrouter/auto",
+                    max_tokens: 2048,        // ✅ أضفنا هذا
+                    temperature: 0.7,        // ✅ للاتساق
                     messages: [
                         { role: "system", content: systemPrompt },
                         { role: "user", content: message }
@@ -324,6 +328,8 @@ exports.chatWithAI = async (req, res) => {
             "https://openrouter.ai/api/v1/chat/completions",
             {
                 model: "openrouter/auto",
+                max_tokens: 2048,        // ✅ أضفنا هذا
+                temperature: 0.7,        // ✅ للاتساق
                 messages: [
                     { role: "system", content: systemPrompt },
                     { role: "user", content: message }
