@@ -13,6 +13,7 @@ exports.getAppointmentsReport = (req, res) => {
             patients.fullname AS patientname,
             doctors.fullname AS doctorname,
             appointments.appointmentdate,
+            appointments.appointmenttime,
             appointments.status,
             appointments.doctorid
         FROM appointments
